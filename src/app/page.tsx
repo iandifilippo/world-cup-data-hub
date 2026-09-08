@@ -67,76 +67,76 @@ export default async function PaginaInicio() {
         />
       </div>
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-2">
-        {/* Próximos partidos */}
-        <Panel titulo="Próximos partidos (2026)">
-          <ul className="divide-y divide-gris-borde">
-            {proximos.map((p) => (
-              <li
-                key={p.id_partido}
-                className="grid grid-cols-[auto_auto_1fr] items-center gap-x-4 gap-y-1 px-5 py-3"
-              >
-                <span className="cifras text-xs font-medium text-gris-texto">
-                  {fechaCorta(p.fecha)}
-                </span>
-                <span className="cifras text-xs text-gris-texto">{p.hora}</span>
-                <span className="flex items-center justify-end gap-2 text-sm">
-                  <span className="flex items-center gap-1.5">
-                    <Bandera emoji={p.bandera_local} nombre={p.equipo_local} />
-                    <span className="font-medium">{p.equipo_local}</span>
-                  </span>
-                  <span className="text-xs text-gris-texto">vs</span>
-                  <span className="flex items-center gap-1.5">
-                    <Bandera emoji={p.bandera_visitante} nombre={p.equipo_visitante} />
-                    <span className="font-medium">{p.equipo_visitante}</span>
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ul>
-          <div className="border-t border-gris-borde px-5 py-3 text-right">
-            <Link
-              href="/calendario"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-azul hover:underline"
-            >
-              Ver calendario completo
-              <IconoFlecha className="h-4 w-4" />
-            </Link>
-          </div>
-        </Panel>
+      {/* El destacado histórico (RF11) ocupa la columna izquierda y se queda
+          a la vista mientras se recorren los paneles de la derecha. */}
+      <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
+        <div className="lg:sticky lg:top-20 lg:self-start">
+          <Destacado ediciones={ediciones.datos} />
+        </div>
 
-        {/* Líderes del ranking */}
-        <Panel titulo="Líderes del ranking 2026">
-          <ol className="divide-y divide-gris-borde">
-            {lideres.map((r) => (
-              <li
-                key={r.codigo_pais}
-                className="flex items-center gap-3 px-5 py-3 text-sm"
+        <div className="grid min-w-0 gap-5">
+          {/* Próximos partidos */}
+          <Panel titulo="Próximos partidos (2026)">
+            <ul className="divide-y divide-gris-borde">
+              {proximos.map((p) => (
+                <li
+                  key={p.id_partido}
+                  className="grid grid-cols-[auto_auto_1fr] items-center gap-x-4 gap-y-1 px-5 py-3"
+                >
+                  <span className="cifras text-xs font-medium text-gris-texto">
+                    {fechaCorta(p.fecha)}
+                  </span>
+                  <span className="cifras text-xs text-gris-texto">{p.hora}</span>
+                  <span className="flex items-center justify-end gap-2 text-sm">
+                    <span className="flex items-center gap-1.5">
+                      <Bandera emoji={p.bandera_local} nombre={p.equipo_local} />
+                      <span className="font-medium">{p.equipo_local}</span>
+                    </span>
+                    <span className="text-xs text-gris-texto">vs</span>
+                    <span className="flex items-center gap-1.5">
+                      <Bandera emoji={p.bandera_visitante} nombre={p.equipo_visitante} />
+                      <span className="font-medium">{p.equipo_visitante}</span>
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="border-t border-gris-borde px-5 py-2.5 text-right">
+              <Link
+                href="/calendario"
+                className="btn btn-enlace text-sm font-semibold"
               >
-                <span className="cifras w-4 text-gris-texto">{r.posicion}</span>
-                <Bandera emoji={r.bandera} nombre={r.nombre_equipo} />
-                <span className="font-medium">{r.nombre_equipo}</span>
-                <span className="cifras ml-auto font-semibold">
-                  {puntos(r.puntos)} pts
-                </span>
-              </li>
-            ))}
-          </ol>
-          <div className="border-t border-gris-borde px-5 py-3 text-right">
-            <Link
-              href="/ranking"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-azul hover:underline"
-            >
-              Ver ranking completo
-              <IconoFlecha className="h-4 w-4" />
-            </Link>
-          </div>
-        </Panel>
-      </div>
+                Ver calendario completo
+                <IconoFlecha className="h-4 w-4" />
+              </Link>
+            </div>
+          </Panel>
 
-      {/* RF11 — destacado histórico rotativo */}
-      <div className="mt-5">
-        <Destacado ediciones={ediciones.datos} />
+          {/* Líderes del ranking */}
+          <Panel titulo="Líderes del ranking 2026">
+            <ol className="divide-y divide-gris-borde">
+              {lideres.map((r) => (
+                <li
+                  key={r.codigo_pais}
+                  className="flex items-center gap-3 px-5 py-3 text-sm"
+                >
+                  <span className="cifras w-4 text-gris-texto">{r.posicion}</span>
+                  <Bandera emoji={r.bandera} nombre={r.nombre_equipo} />
+                  <span className="font-medium">{r.nombre_equipo}</span>
+                  <span className="cifras ml-auto font-semibold">
+                    {puntos(r.puntos)} pts
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <div className="border-t border-gris-borde px-5 py-2.5 text-right">
+              <Link href="/ranking" className="btn btn-enlace text-sm font-semibold">
+                Ver ranking completo
+                <IconoFlecha className="h-4 w-4" />
+              </Link>
+            </div>
+          </Panel>
+        </div>
       </div>
     </>
   );

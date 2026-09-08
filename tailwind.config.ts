@@ -1,38 +1,65 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * Cada color es una variable CSS con el triplete RGB suelto ("37 99 235") en
+ * lugar de un hex fijo. Así Tailwind sigue generando las variantes con opacidad
+ * (`bg-azul/20`) y, al mismo tiempo, el selector de paleta puede repintar toda
+ * la aplicación cambiando un atributo en <html>. Las paletas viven en
+ * `src/app/globals.css`.
+ */
+const token = (nombre: string) => `rgb(var(--c-${nombre}) / <alpha-value>)`;
+
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
+        // Barra lateral y superficies oscuras.
         navy: {
-          900: "#081527",
-          800: "#0B1D36",
-          700: "#12294A",
-          600: "#1B3A63",
+          900: token("navy-900"),
+          800: token("navy-800"),
+          700: token("navy-700"),
+          600: token("navy-600"),
+          texto: token("navy-texto"),
         },
+        // Color primario de la paleta activa.
         azul: {
-          DEFAULT: "#2563EB",
-          claro: "#3B82F6",
-          suave: "#DBEAFE",
+          DEFAULT: token("azul"),
+          claro: token("azul-claro"),
+          suave: token("azul-suave"),
+          contraste: token("azul-contraste"),
         },
-        lienzo: "#F1F5F9",
-        tinta: "#0F172A",
+        lienzo: token("lienzo"),
+        superficie: token("superficie"),
+        tinta: token("tinta"),
         gris: {
-          borde: "#E2E8F0",
-          texto: "#64748B",
-          suave: "#F8FAFC",
+          borde: token("gris-borde"),
+          texto: token("gris-texto"),
+          suave: token("gris-suave"),
         },
-        sube: "#16A34A",
-        baja: "#DC2626",
+        acento: token("acento"),
+        sube: token("sube"),
+        baja: token("baja"),
+        aviso: {
+          borde: token("aviso-borde"),
+          fondo: token("aviso-fondo"),
+          texto: token("aviso-texto"),
+        },
+        exito: {
+          fondo: token("exito-fondo"),
+          texto: token("exito-texto"),
+        },
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
         cifra: ["Manrope", "Inter", "system-ui", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       boxShadow: {
-        tarjeta: "0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06)",
-        panel: "0 4px 20px rgba(15, 23, 42, 0.08)",
+        tarjeta:
+          "0 1px 2px rgb(var(--c-sombra) / 0.04), 0 1px 3px rgb(var(--c-sombra) / 0.06)",
+        panel: "0 4px 20px rgb(var(--c-sombra) / 0.10)",
+        modal: "0 24px 60px rgb(var(--c-sombra) / 0.28)",
       },
     },
   },

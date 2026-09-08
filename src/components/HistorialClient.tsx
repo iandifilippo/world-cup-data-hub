@@ -218,7 +218,7 @@ export function HistorialClient({
                       <button
                         type="button"
                         onClick={() => setDetalle(e)}
-                        className="rounded-md border border-gris-borde px-2.5 py-1 text-xs font-semibold text-azul transition hover:bg-azul-suave"
+                        className="btn btn-secundario btn-sm"
                       >
                         Ver
                       </button>
@@ -271,7 +271,7 @@ export function HistorialClient({
               type="button"
               onClick={() => setDetalle(null)}
               aria-label="Cerrar el detalle del torneo"
-              className="rounded-md p-1 text-gris-texto transition hover:bg-slate-100 hover:text-tinta"
+              className="btn-icono"
             >
               <IconoCerrar className="h-4 w-4" />
             </button>
@@ -279,7 +279,7 @@ export function HistorialClient({
         >
           <div className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.7fr)]">
             <div className="flex gap-4">
-              <IconoTrofeo className="h-14 w-14 shrink-0 text-amber-400" />
+              <IconoTrofeo className="h-14 w-14 shrink-0 text-acento" />
               <dl className="space-y-1 text-sm">
                 <Fila k="Sede" v={detalle.sede} />
                 <Fila k="Campeón" v={detalle.campeon} fuerte />
@@ -380,11 +380,8 @@ function BotonPagina({
       disabled={deshabilitado}
       onClick={onClick}
       className={[
-        "cifras min-w-8 rounded-md px-2.5 py-1 text-sm transition",
-        activo
-          ? "bg-azul font-semibold text-white"
-          : "text-gris-texto hover:bg-slate-100 hover:text-tinta",
-        deshabilitado ? "cursor-not-allowed opacity-40 hover:bg-transparent" : "",
+        "btn btn-sm cifras min-w-9",
+        activo ? "btn-primario" : "btn-fantasma",
       ].join(" ")}
     >
       {texto}

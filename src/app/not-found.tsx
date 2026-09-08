@@ -11,7 +11,7 @@ export default function NoEncontrado() {
       </p>
       <Link
         href="/"
-        className="mt-6 inline-block rounded-lg bg-azul px-4 py-2 text-sm font-semibold text-white transition hover:bg-azul-claro"
+        className="btn btn-primario mt-6"
       >
         Volver al inicio
       </Link>

@@ -123,3 +123,100 @@ export function IconoFlecha(props: Props) {
     </svg>
   );
 }
+
+export function IconoPaleta(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 3a9 9 0 0 0 0 18c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4.1-4-7.6-9-7.6Z" />
+      <circle cx="7.7" cy="11.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="10.4" cy="7.7" r="1" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="8.2" r="1" fill="currentColor" stroke="none" />
+      <circle cx="17.4" cy="12" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function IconoBaseDatos(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <ellipse cx="12" cy="6" rx="7.5" ry="3.2" />
+      <path d="M4.5 6v12c0 1.8 3.4 3.2 7.5 3.2s7.5-1.4 7.5-3.2V6" />
+      <path d="M4.5 12c0 1.8 3.4 3.2 7.5 3.2s7.5-1.4 7.5-3.2" />
+    </svg>
+  );
+}
+
+export function IconoMas(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
+export function IconoCopiar(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="9" y="9" width="11" height="11" rx="2" />
+      <path d="M15 6.5V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h1.5" />
+    </svg>
+  );
+}
+
+export function IconoPaloma(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="m4.5 12.5 5 5 10-11" />
+    </svg>
+  );
+}
+
+export function IconoAnterior(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="m14.5 5.5-6.5 6.5 6.5 6.5" />
+    </svg>
+  );
+}
+
+export function IconoSiguiente(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="m9.5 5.5 6.5 6.5-6.5 6.5" />
+    </svg>
+  );
+}
+
+export function IconoReproducir(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M8 5.5 18 12 8 18.5V5.5Z" />
+    </svg>
+  );
+}
+
+export function IconoPausa(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M9.5 5v14M14.5 5v14" />
+    </svg>
+  );
+}
+
+export function IconoTabla(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M3 9.5h18M9 9.5V20M3 15h18" />
+    </svg>
+  );
+}
+
+export function IconoAdvertencia(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 4.5 21 19.5H3L12 4.5Z" />
+      <path d="M12 10v4M12 16.8v.2" />
+    </svg>
+  );
+}

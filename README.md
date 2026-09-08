@@ -60,12 +60,14 @@ src/
     ranking/page.tsx      Ranking FIFA comparativo (RF06, RF07)
     calendario/page.tsx   Calendario 2026 (RF08–RF10)
     not-found.tsx         404
-    globals.css           Tokens de diseño y clases compartidas
+    globals.css           Paletas, tokens de diseño y clases compartidas
   components/
-    Navegacion.tsx        Sidebar oscuro + tabs superiores
+    Navegacion.tsx        Sidebar oscuro + tabs superiores + pie de proyecto
     Piezas.tsx            Tarjetas de métrica, paneles, banderas, insignias
     Icons.tsx             Iconografía SVG propia
-    Destacado.tsx         Destacado histórico rotativo
+    Destacado.tsx         Destacado histórico (columna izquierda de Inicio)
+    Paleta.tsx            Selector de paleta de colores
+    ConsolaDatos.tsx      Consola de inserción al estilo de Supabase
     HistorialClient.tsx   Filtros, orden, paginación y detalle de edición
     RankingClient.tsx     Tabla de ranking y comparador 2022 vs 2026
     CalendarioClient.tsx  Filtros, vista tarjetas/calendario y detalle
@@ -75,6 +77,8 @@ src/
     supabase.ts           Cliente Supabase opcional
     queries.ts            Acceso a datos con respaldo local
     comparar.ts           Comparación entre ciclos (regla RN10)
+    paletas.ts            Definición de las paletas disponibles
+    esquema.ts            Metadata del esquema para la consola de datos
     data/                 Dataset local autogenerado
 supabase/
   migrations/             Las 7 migraciones SQL, en orden
@@ -91,6 +95,43 @@ python3 scripts/gen_historicos.py  # partidos históricos
 python3 scripts/gen_ts.py          # regenera src/lib/data/*.ts
 python3 scripts/gen_sql.py         # regenera supabase/migrations/*.sql
 ```
+
+---
+
+## Herramientas del pie de la barra lateral
+
+Al final de la barra lateral (y, en pantallas angostas, en la barra superior)
+viven dos herramientas del proyecto.
+
+### Consola de datos
+
+Un editor de inserción al estilo del *Table editor* de Supabase. Se elige una
+de las tablas del esquema, se llena el formulario —que sale de la metadata de
+`src/lib/esquema.ts`, con el tipo de Postgres y las restricciones de cada
+columna— y abajo se arma el `INSERT` correspondiente en vivo.
+
+- **Añadir al script** valida el registro contra las restricciones de la tabla
+  (obligatoriedad, tipos, rangos, `char(n)`, RN01 y RN01b) y lo acumula: se
+  pueden cargar varios registros y copiar todo el script de una vez.
+- **Insertar registro** solo se habilita cuando hay variables de entorno de
+  Supabase. Ten en cuenta que las políticas RLS de la migración 004 conceden
+  únicamente lectura a la clave pública, así que un `INSERT` con la clave anon
+  se rechaza: para escribir de verdad, ejecuta el SQL generado desde el editor
+  de Supabase.
+
+Sin Supabase configurado la consola no escribe en ninguna base; sirve como
+generador de SQL.
+
+### Paleta de la página
+
+Cuatro paletas —Clásico, Esmeralda, Atardecer y Noche (modo oscuro)—. Cada una
+es un bloque de variables CSS en `globals.css`; el selector escribe
+`data-paleta` en `<html>` y guarda la elección en `localStorage`. Un script
+mínimo en `<head>` la vuelve a aplicar antes del primer pintado, así que no hay
+parpadeo al recargar.
+
+Para agregar una paleta nueva basta con añadir su bloque de variables en
+`globals.css` y una entrada en `src/lib/paletas.ts`.
 
 ---
 
@@ -184,7 +225,7 @@ Si agregas las variables después del primer deploy, hay que redesplegar
 | RF08 | Alternancia tarjetas/calendario sin perder filtros |
 | RF09 | Filtros combinables por fecha, equipo y fase |
 | RF10 | Panel de detalle con banderas, estadio y comparación de ranking |
-| RF11 | `Destacado.tsx`, rota cada 12 s con controles de pausa |
+| RF11 | `Destacado.tsx`, navegación manual y rotación opcional cada 12 s |
 | RF12 | `Navegacion.tsx`, presente en todas las pantallas |
 | RN01 | `CHECK rn01_campeon_subcampeon` en `ediciones` |
 | RN02, RN05, RN08 | Trigger `fn_validar_partido()` |

@@ -180,7 +180,7 @@ export function RankingClient({
             <button
               type="button"
               onClick={() => setVerTodo((v) => !v)}
-              className="text-sm font-semibold text-azul hover:underline"
+              className="btn btn-enlace btn-sm"
             >
               {verTodo ? "Mostrar solo las primeras 60" : "Ver las 211 selecciones"}
             </button>
@@ -215,7 +215,7 @@ export function RankingClient({
                 Esa selección no tiene registros de ranking.
               </p>
             ) : !comparacion.comparable ? (
-              <p className="mt-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              <p className="mt-5 rounded-lg border border-aviso-borde bg-aviso-fondo px-4 py-3 text-sm text-aviso-texto">
                 {comparacion.nombre_equipo} no tiene posición registrada en los dos
                 ciclos, así que la comparación no está disponible. No se muestra un
                 valor estimado.

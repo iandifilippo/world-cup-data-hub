@@ -205,7 +205,7 @@ export function CalendarioClient({ partidos }: { partidos: PartidoCalendario[] }
             <button
               type="button"
               onClick={limpiar}
-              className="text-sm font-semibold text-azul hover:underline"
+              className="btn btn-enlace btn-sm"
             >
               Limpiar filtros
             </button>
@@ -239,7 +239,7 @@ export function CalendarioClient({ partidos }: { partidos: PartidoCalendario[] }
                   <button
                     type="button"
                     onClick={() => setMostrar((m) => m + LOTE)}
-                    className="rounded-lg border border-gris-borde bg-white px-4 py-2 text-sm font-semibold text-azul shadow-tarjeta transition hover:bg-azul-suave"
+                    className="btn btn-secundario"
                   >
                     Ver más partidos
                   </button>
@@ -320,10 +320,8 @@ function BotonVista({
       onClick={onClick}
       aria-pressed={activo}
       className={[
-        "rounded-lg px-3.5 py-1.5 text-sm font-semibold transition",
-        activo
-          ? "bg-azul text-white"
-          : "border border-gris-borde text-gris-texto hover:text-tinta",
+        "btn btn-sm px-3.5 py-1.5",
+        activo ? "btn-primario" : "btn-secundario",
       ].join(" ")}
     >
       {children}
@@ -397,7 +395,7 @@ function DetallePartido({
           type="button"
           onClick={onCerrar}
           aria-label="Cerrar el detalle del partido"
-          className="rounded-md p-1 text-gris-texto transition hover:bg-slate-100 hover:text-tinta"
+          className="btn-icono"
         >
           <IconoCerrar className="h-4 w-4" />
         </button>

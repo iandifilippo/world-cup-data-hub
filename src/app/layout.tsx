@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import "./globals.css";
 import { BarraLateral, BarraSuperior } from "@/components/Navegacion";
+import { SCRIPT_PALETA } from "@/lib/paletas";
 
 export const metadata: Metadata = {
   title: {
@@ -17,7 +18,9 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="es">
+    // El script de la paleta escribe data-paleta en <html> antes de hidratar,
+    // por eso se silencia el aviso de discrepancia.
+    <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -25,17 +28,20 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"
           rel="stylesheet"
         />
+        {/* Aplica la paleta guardada antes del primer pintado: sin esto se vería
+            un parpadeo con los colores por defecto en cada carga. */}
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_PALETA }} />
       </head>
       <body>
         <a
           href="#contenido"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-azul focus:px-4 focus:py-2 focus:text-white"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-azul focus:px-4 focus:py-2 focus:text-azul-contraste"
         >
           Saltar al contenido
         </a>
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen items-start">
           <BarraLateral />
-          <div className="flex min-w-0 flex-1 flex-col">
+          <div className="flex min-h-screen min-w-0 flex-1 flex-col">
             <BarraSuperior />
             <main id="contenido" className="flex-1 px-5 py-6 sm:px-8 sm:py-8">
               <div className="mx-auto w-full max-w-6xl">{children}</div>

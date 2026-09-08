@@ -102,7 +102,7 @@ export function Bandera({
     return (
       <span
         aria-hidden="true"
-        className={`inline-grid h-5 w-7 place-items-center rounded-sm bg-slate-200 text-[10px] text-slate-500 ${className}`}
+        className={`inline-grid h-5 w-7 place-items-center rounded-sm bg-gris-borde text-[10px] text-gris-texto ${className}`}
       >
         ?
       </span>
@@ -123,9 +123,9 @@ export function Insignia({
   tono?: "neutro" | "azul" | "verde";
 }) {
   const tonos = {
-    neutro: "bg-slate-100 text-slate-600",
+    neutro: "bg-gris-suave text-gris-texto ring-1 ring-inset ring-gris-borde",
     azul: "bg-azul-suave text-azul",
-    verde: "bg-emerald-50 text-emerald-700",
+    verde: "bg-exito-fondo text-exito-texto",
   } as const;
   return (
     <span
@@ -148,7 +148,7 @@ export function Vacio({ mensaje, accion }: { mensaje: string; accion?: string })
 export function AvisoOrigen({ origen }: { origen: "supabase" | "local" }) {
   if (origen === "supabase") return null;
   return (
-    <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2 text-xs text-amber-800">
+    <p className="mb-4 rounded-lg border border-aviso-borde bg-aviso-fondo px-3.5 py-2 text-xs text-aviso-texto">
       Mostrando el dataset local incluido en el repositorio. Para leer desde
       Supabase, define <code className="font-mono">NEXT_PUBLIC_SUPABASE_URL</code> y{" "}
       <code className="font-mono">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.

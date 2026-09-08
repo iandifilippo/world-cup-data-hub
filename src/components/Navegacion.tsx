@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { ConsolaDatos } from "@/components/ConsolaDatos";
 import {
   IconoCalendario,
   IconoHistorial,
@@ -11,6 +12,7 @@ import {
   IconoRanking,
   IconoTrofeo,
 } from "@/components/Icons";
+import { SelectorPaleta } from "@/components/Paleta";
 
 interface Modulo {
   href: string;
@@ -31,16 +33,22 @@ function esActivo(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+/**
+ * La barra lateral se queda fija ocupando exactamente la altura de la ventana
+ * (`sticky` + `h-screen`) y hace scroll por dentro. Antes crecía hasta el alto
+ * total del documento, así que en las páginas largas su pie quedaba muy por
+ * debajo del borde inferior de la pantalla y no se alcanzaba a ver.
+ */
 export function BarraLateral() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-64 shrink-0 flex-col bg-navy-800 lg:flex">
+    <aside className="barra-fina sticky top-0 hidden h-screen w-64 shrink-0 flex-col overflow-y-auto bg-navy-800 lg:flex">
       <Link
         href="/"
-        className="flex items-center gap-3 px-6 py-7 text-white transition hover:opacity-90"
+        className="flex items-center gap-3 px-6 py-6 text-white transition hover:opacity-90"
       >
-        <IconoTrofeo className="h-8 w-8 shrink-0 text-amber-300" />
+        <IconoTrofeo className="h-8 w-8 shrink-0 text-acento" />
         <span className="text-[15px] font-semibold leading-tight tracking-wide">
           World Cup
           <br />
@@ -58,10 +66,10 @@ export function BarraLateral() {
               href={m.href}
               aria-current={activo ? "page" : undefined}
               className={[
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition",
+                "flex items-center gap-3 rounded-lg border px-3 py-2.5 text-sm transition",
                 activo
-                  ? "bg-azul text-white"
-                  : "text-slate-300 hover:bg-navy-700 hover:text-white",
+                  ? "border-azul bg-azul text-azul-contraste"
+                  : "border-transparent text-navy-texto hover:bg-navy-700 hover:text-white",
               ].join(" ")}
             >
               <Icono className="h-5 w-5 shrink-0" />
@@ -71,10 +79,20 @@ export function BarraLateral() {
         })}
       </nav>
 
-      <p className="mt-auto m-4 rounded-lg bg-navy-700/70 p-4 text-xs leading-relaxed text-slate-300">
-        Toda la historia del Mundial, el Ranking FIFA y el calendario 2026 en un
-        solo lugar.
-      </p>
+      {/* Pie de la barra lateral: herramientas del proyecto, al estilo del
+          panel de Supabase (consola de datos y apariencia). */}
+      <div className="mt-auto border-t border-white/10 p-3">
+        <p className="px-1 pb-2 text-[10px] font-semibold uppercase tracking-wider text-navy-texto/70">
+          Proyecto
+        </p>
+        <div className="flex flex-col gap-1.5">
+          <ConsolaDatos variante="lateral" />
+          <SelectorPaleta variante="lateral" />
+        </div>
+        <p className="mt-2.5 px-1 text-[11px] leading-relaxed text-navy-texto/80">
+          Historia del Mundial, Ranking FIFA y calendario 2026 en un solo lugar.
+        </p>
+      </div>
     </aside>
   );
 }
@@ -83,18 +101,22 @@ export function BarraSuperior() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-gris-borde bg-white/95 backdrop-blur">
-      <div className="flex items-center gap-6 px-5 py-3 sm:px-8">
-        <Link href="/" className="flex items-center gap-2 lg:hidden">
+    <header className="sticky top-0 z-20 border-b border-gris-borde bg-superficie/95 backdrop-blur">
+      <div className="flex items-center gap-4 px-5 py-3 sm:px-8">
+        {/* En pantallas angostas solo queda el trofeo: el nombre completo
+            envolvía en cuatro líneas y aplastaba la navegación. */}
+        <Link href="/" className="flex shrink-0 items-center gap-2 lg:hidden">
           <IconoTrofeo className="h-6 w-6 text-azul" />
-          <span className="text-sm font-semibold">World Cup Data Hub</span>
+          <span className="hidden whitespace-nowrap text-sm font-semibold sm:inline">
+            World Cup Data Hub
+          </span>
         </Link>
         <span className="hidden text-base font-semibold tracking-tight lg:block">
           World Cup Data Hub
         </span>
 
         <nav
-          className="-mb-3 ml-auto flex gap-1 overflow-x-auto pb-0"
+          className="barra-fina -mb-3 ml-auto flex min-w-0 gap-1 overflow-x-auto pb-0"
           aria-label="Navegación principal"
         >
           {MODULOS.map((m) => {
@@ -116,6 +138,13 @@ export function BarraSuperior() {
             );
           })}
         </nav>
+
+        {/* En pantallas sin barra lateral, las mismas herramientas viajan aquí
+            para que sigan estando a un clic. */}
+        <div className="flex shrink-0 items-center gap-1 border-l border-gris-borde pl-2 lg:hidden">
+          <ConsolaDatos variante="compacto" />
+          <SelectorPaleta variante="compacto" />
+        </div>
       </div>
     </header>
   );
