@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s · World Cup Data Hub",
   },
   description:
-    "Consulta y relaciona en un solo lugar la historia de la Copa Mundial de Fútbol (1930–2022), el Ranking FIFA y el calendario del Mundial 2026.",
+    "Consulta y relaciona en un solo lugar la historia de la Copa Mundial de Fútbol (1930–2026), el Ranking FIFA y el Mundial 2026 ganado por España.",
 };
 
 export default function RootLayout({
@@ -47,8 +47,8 @@ export default function RootLayout({
               <div className="mx-auto w-full max-w-6xl">{children}</div>
             </main>
             <footer className="border-t border-gris-borde px-5 py-5 text-xs text-gris-texto sm:px-8">
-              World Cup Data Hub · Proyecto académico de Front-End · Datos
-              históricos 1930–2022, Ranking FIFA y Mundial 2026.
+              World Cup Data Hub · Proyecto académico de Front-End · 23
+              ediciones (1930–2026), Ranking FIFA y Mundial 2026.
             </footer>
           </div>
         </div>

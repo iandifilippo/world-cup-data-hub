@@ -99,6 +99,9 @@ export interface PartidoCalendario {
   puntos_local: number | null;
   ranking_visitante: number | null;
   puntos_visitante: number | null;
+  /** Null mientras el partido no se haya jugado o no se haya cargado. */
+  goles_local: number | null;
+  goles_visitante: number | null;
 }
 
 /** Partido de una edición histórica (RF05). */

@@ -115,6 +115,31 @@ export function Bandera({
   );
 }
 
+/**
+ * Marcador de un partido. Mientras no haya goles cargados muestra el «vs» de
+ * siempre, así sirve igual para un partido jugado y para uno sin resultado.
+ */
+export function Marcador({
+  p,
+  className = "",
+}: {
+  p: { goles_local: number | null; goles_visitante: number | null };
+  className?: string;
+}) {
+  if (p.goles_local === null || p.goles_visitante === null) {
+    return <span className={`text-xs text-gris-texto ${className}`}>vs</span>;
+  }
+  return (
+    <span
+      className={`cifras rounded-md bg-gris-suave px-2 py-0.5 text-sm font-bold tabular-nums ${className}`}
+    >
+      {p.goles_local}
+      <span className="mx-1 font-normal text-gris-texto">-</span>
+      {p.goles_visitante}
+    </span>
+  );
+}
+
 export function Insignia({
   children,
   tono = "neutro",

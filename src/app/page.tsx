@@ -7,7 +7,13 @@ import {
   IconoSelecciones,
   IconoTrofeo,
 } from "@/components/Icons";
-import { AvisoOrigen, Bandera, Panel, TarjetaMetrica } from "@/components/Piezas";
+import {
+  AvisoOrigen,
+  Bandera,
+  Marcador,
+  Panel,
+  TarjetaMetrica,
+} from "@/components/Piezas";
 import { Destacado } from "@/components/Destacado";
 import { fechaCorta, puntos } from "@/lib/format";
 import { getCalendario, getEdiciones, getMetricas, getRanking } from "@/lib/queries";
@@ -24,7 +30,10 @@ export default async function PaginaInicio() {
     .filter((r) => r.ciclo === 2026)
     .slice(0, 5);
 
-  const proximos = calendario.datos.slice(0, 5);
+  // El Mundial 2026 ya se jugó: se muestran los últimos partidos con
+  // resultado en lugar de los primeros del calendario.
+  const jugados = calendario.datos.filter((p) => p.goles_local !== null);
+  const destacados = (jugados.length > 0 ? jugados : calendario.datos).slice(-5).reverse();
 
   return (
     <>
@@ -61,9 +70,9 @@ export default async function PaginaInicio() {
         />
         <TarjetaMetrica
           icono={<IconoCalendario className="h-6 w-6" />}
-          etiqueta="Partidos programados 2026"
+          etiqueta="Partidos del Mundial 2026"
           valor={metricas.datos.partidos_programados_2026}
-          pie="Fase de grupos y eliminatorias"
+          pie="Fase de grupos y eliminación"
         />
       </div>
 
@@ -75,10 +84,10 @@ export default async function PaginaInicio() {
         </div>
 
         <div className="grid min-w-0 gap-5">
-          {/* Próximos partidos */}
-          <Panel titulo="Próximos partidos (2026)">
+          {/* Resultados del Mundial 2026 */}
+          <Panel titulo="Mundial 2026 · últimos resultados">
             <ul className="divide-y divide-gris-borde">
-              {proximos.map((p) => (
+              {destacados.map((p) => (
                 <li
                   key={p.id_partido}
                   className="grid grid-cols-[auto_auto_1fr] items-center gap-x-4 gap-y-1 px-5 py-3"
@@ -92,7 +101,7 @@ export default async function PaginaInicio() {
                       <Bandera emoji={p.bandera_local} nombre={p.equipo_local} />
                       <span className="font-medium">{p.equipo_local}</span>
                     </span>
-                    <span className="text-xs text-gris-texto">vs</span>
+                    <Marcador p={p} />
                     <span className="flex items-center gap-1.5">
                       <Bandera emoji={p.bandera_visitante} nombre={p.equipo_visitante} />
                       <span className="font-medium">{p.equipo_visitante}</span>
@@ -106,7 +115,7 @@ export default async function PaginaInicio() {
                 href="/calendario"
                 className="btn btn-enlace text-sm font-semibold"
               >
-                Ver calendario completo
+                Ver el calendario completo
                 <IconoFlecha className="h-4 w-4" />
               </Link>
             </div>

@@ -80,7 +80,9 @@ export async function getPartidosHistoricos(): Promise<
           "id_partido, anio, fecha, equipo_local, goles_local, goles_visitante," +
             " equipo_visitante, fase, nombre_estadio, ciudad, nota",
         )
-        .neq("anio", 2026)
+        // El historial muestra partidos jugados: los del calendario 2026 que
+        // todavía no tienen marcador cargado no entran aquí.
+        .not("goles_local", "is", null)
         .order("fecha", { ascending: true }),
     PARTIDOS_HISTORICOS,
   );
@@ -104,7 +106,9 @@ export async function getMetricas(): Promise<Resultado<MetricasGlobales>> {
     ediciones_historicas: EDICIONES.length,
     partidos_historicos: EDICIONES.reduce((t, e) => t + e.partidos, 0),
     selecciones_ranking_2026: RANKING.filter((r) => r.ciclo === 2026).length,
-    partidos_programados_2026: CALENDARIO_2026.length,
+    // El total real del torneo (104), no cuántos partidos están cargados.
+    partidos_programados_2026:
+      EDICIONES.find((e) => e.anio === 2026)?.partidos ?? CALENDARIO_2026.length,
     anio_min: Math.min(...EDICIONES.map((e) => e.anio)),
     anio_max: Math.max(...EDICIONES.map((e) => e.anio)),
   };

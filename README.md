@@ -1,7 +1,7 @@
 # World Cup Data Hub
 
 Plataforma web frontend para consultar y relacionar en un solo lugar la historia
-de la Copa Mundial de Fútbol (1930–2022), el Ranking FIFA y el calendario del
+de la Copa Mundial de Fútbol (1930–2026), el Ranking FIFA y el Mundial 2026 y el calendario del
 Mundial 2026.
 
 Proyecto de la clase de Front-End · Ian Di Filippo Espeleta, Juan Felipe Morales
@@ -81,9 +81,9 @@ src/
     esquema.ts            Metadata del esquema para la consola de datos
     data/                 Dataset local autogenerado
 supabase/
-  migrations/             Las 8 migraciones SQL, en orden
+  migrations/             Las 9 migraciones SQL, en orden
   world-cup-data-hub-completo.sql
-                          Las 8 migraciones unidas en un solo script
+                          Las 9 migraciones unidas en un solo script
 scripts/                  Generadores Python del dataset y del SQL
 ```
 
@@ -96,26 +96,32 @@ python3 scripts/gen_data.py        # construye data_build/*.json
 python3 scripts/gen_ts.py          # regenera src/lib/data/*.ts
 python3 scripts/gen_sql.py         # regenera las migraciones 001–007
 python3 scripts/gen_historico.py   # regenera la migración 008 y el histórico
+python3 scripts/gen_2026.py        # regenera la migración 009 y el Mundial 2026
 ```
 
 ### Qué hay en la base
 
 | Tabla | Filas | Origen |
 |---|---|---|
-| `ediciones` | 23 | 22 ediciones 1930–2022 + Mundial 2026 |
+| `ediciones` | 23 | Las 23 ediciones de 1930 a 2026, todas finalizadas |
 | `equipos` | 214 | 211 miembros FIFA + Checoslovaquia, URSS y Yugoslavia |
 | `sedes` | 79 | 16 estadios de 2026 + 63 sedes históricas |
 | `ranking_fifa` | 422 | 211 selecciones × ciclos 2022 y 2026 |
-| `partidos` | 215 | 104 programados de 2026 + 111 históricos |
+| `partidos` | 208 | 111 históricos (1930–2022) + 97 del Mundial 2026 |
 | `jugadores` | 22 | goleador de cada edición |
 | `fases`, `partido_equipo`, `edicion_sede`, `edicion_equipo`, `edicion_jugador` | — | relaciones del modelo E-R |
 
-El histórico cubre la fase final completa de las 22 ediciones (semifinales
+El histórico cubre la fase final completa de las 23 ediciones (semifinales
 donde existieron, tercer lugar y final), la ronda final de Brasil 1950, el
-torneo ampliado de México 1970 y todas las eliminatorias de Qatar 2022. El
-total oficial de partidos de cada torneo sigue estando en la columna
-`ediciones.partidos`, y la interfaz aclara cuántos de esos partidos están
-cargados en detalle.
+torneo ampliado de México 1970, todas las eliminatorias de Qatar 2022 y la
+fase de eliminación de Norteamérica 2026. El total oficial de partidos de cada
+torneo sigue estando en la columna `ediciones.partidos`, y la interfaz aclara
+cuántos de esos partidos están cargados en detalle.
+
+El Mundial 2026 se jugó del 11 de junio al 19 de julio de 2026 y lo ganó
+España, que venció 1-0 a Argentina en la prórroga de la final disputada en el
+MetLife Stadium. La migración 009 cierra esa edición con sus cifras oficiales
+y reemplaza las llaves sin sortear («Ganador SF 1») por los resultados reales.
 
 ---
 

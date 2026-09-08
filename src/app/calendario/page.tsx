@@ -12,8 +12,8 @@ export default async function PaginaCalendario() {
   return (
     <>
       <Encabezado
-        titulo="Calendario Mundial 2026"
-        descripcion="Consulta los partidos programados para el Mundial 2026."
+        titulo="Mundial 2026"
+        descripcion="Los 104 partidos del Mundial 2026, con el resultado de la fase de eliminación."
       />
       <AvisoOrigen origen={origen} />
       <CalendarioClient partidos={datos} />

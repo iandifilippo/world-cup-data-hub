@@ -3,7 +3,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 
 import { IconoBuscar, IconoCerrar, IconoEstadio } from "@/components/Icons";
-import { Bandera, Insignia, Panel, Vacio } from "@/components/Piezas";
+import { Bandera, Insignia, Marcador, Panel, Vacio } from "@/components/Piezas";
 import { claveMes, fechaCorta, mesLargo, normalizar, puntos } from "@/lib/format";
 import type { Fase, PartidoCalendario } from "@/lib/types";
 
@@ -267,7 +267,7 @@ export function CalendarioClient({ partidos }: { partidos: PartidoCalendario[] }
                           <span className="flex items-center gap-2 text-sm">
                             <Bandera emoji={p.bandera_local} nombre={p.equipo_local} />
                             <span className="truncate font-medium">{p.equipo_local}</span>
-                            <span className="text-xs text-gris-texto">vs</span>
+                            <Marcador p={p} />
                             <Bandera
                               emoji={p.bandera_visitante}
                               nombre={p.equipo_visitante}
@@ -360,7 +360,7 @@ function TarjetaPartido({
           <Bandera emoji={p.bandera_local} nombre={p.equipo_local} className="text-2xl" />
           <span className="w-full truncate text-xs font-medium">{p.equipo_local}</span>
         </span>
-        <span className="text-xs text-gris-texto">vs</span>
+        <Marcador p={p} />
         <span className="flex min-w-0 flex-col items-center gap-1 text-center">
           <Bandera
             emoji={p.bandera_visitante}
@@ -420,7 +420,7 @@ function DetallePartido({
             />
             <span className="text-sm font-semibold">{p.equipo_local}</span>
           </span>
-          <span className="text-sm font-bold text-gris-texto">VS</span>
+          <Marcador p={p} className="text-base" />
           <span className="flex flex-1 flex-col items-center gap-1.5 text-center">
             <Bandera
               emoji={p.bandera_visitante}
