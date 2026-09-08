@@ -13,3 +13,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 data_build/
+
+# Configuración local del editor / servidor de desarrollo
+.claude/

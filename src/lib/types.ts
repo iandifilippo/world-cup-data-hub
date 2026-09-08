@@ -124,15 +124,18 @@ export interface MetricasGlobales {
 /** De dónde salieron los datos que está viendo el usuario. */
 export type OrigenDatos = "supabase" | "local";
 
-/** Partido histórico con marcador y nota contextual. */
+/** Partido histórico con marcador, sede y nota contextual. */
 export interface PartidoHistoricoDetallado {
   id_partido: number;
   anio: number;
+  /** ISO corto: YYYY-MM-DD */
   fecha: string;
   equipo_local: string;
   goles_local: number;
   goles_visitante: number;
   equipo_visitante: string;
   fase: string;
+  nombre_estadio: string;
+  ciudad: string;
   nota: string | null;
 }

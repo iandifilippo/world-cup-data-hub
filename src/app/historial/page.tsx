@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 
 import { HistorialClient } from "@/components/HistorialClient";
 import { AvisoOrigen, Encabezado } from "@/components/Piezas";
-import { PARTIDOS_HISTORICOS } from "@/lib/data/partidosHistoricos";
-import { getEdiciones } from "@/lib/queries";
+import { getEdiciones, getPartidosHistoricos } from "@/lib/queries";
 
 export const metadata: Metadata = { title: "Historial de Mundiales" };
 
 export default async function PaginaHistorial() {
-  const { datos, origen } = await getEdiciones();
+  const [ediciones, partidos] = await Promise.all([
+    getEdiciones(),
+    getPartidosHistoricos(),
+  ]);
 
   return (
     <>
@@ -16,8 +18,8 @@ export default async function PaginaHistorial() {
         titulo="Historial de Mundiales"
         descripcion="Consulta todas las ediciones de la Copa Mundial de la FIFA."
       />
-      <AvisoOrigen origen={origen} />
-      <HistorialClient ediciones={datos} partidos={PARTIDOS_HISTORICOS} />
+      <AvisoOrigen origen={ediciones.origen} />
+      <HistorialClient ediciones={ediciones.datos} partidos={partidos.datos} />
     </>
   );
 }

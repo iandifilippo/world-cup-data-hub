@@ -4,6 +4,7 @@ import { getSupabase } from "@/lib/supabase";
 import { EDICIONES } from "@/lib/data/ediciones";
 import { RANKING } from "@/lib/data/ranking";
 import { CALENDARIO_2026, SEDES } from "@/lib/data/calendario";
+import { PARTIDOS_HISTORICOS } from "@/lib/data/partidosHistoricos";
 import { EQUIPOS } from "@/lib/data/equipos";
 import type {
   Edicion,
@@ -11,6 +12,7 @@ import type {
   MetricasGlobales,
   OrigenDatos,
   PartidoCalendario,
+  PartidoHistoricoDetallado,
   RankingFila,
   Sede,
 } from "@/lib/types";
@@ -63,6 +65,24 @@ export async function getCalendario(): Promise<Resultado<PartidoCalendario[]>> {
     (sb) =>
       sb.from("v_calendario_2026").select("*").order("numero_partido", { ascending: true }),
     CALENDARIO_2026,
+  );
+}
+
+/** RF05 — partidos de las ediciones históricas (vista v_partidos_edicion). */
+export async function getPartidosHistoricos(): Promise<
+  Resultado<PartidoHistoricoDetallado[]>
+> {
+  return consultar<PartidoHistoricoDetallado[]>(
+    (sb) =>
+      sb
+        .from("v_partidos_edicion")
+        .select(
+          "id_partido, anio, fecha, equipo_local, goles_local, goles_visitante," +
+            " equipo_visitante, fase, nombre_estadio, ciudad, nota",
+        )
+        .neq("anio", 2026)
+        .order("fecha", { ascending: true }),
+    PARTIDOS_HISTORICOS,
   );
 }
 

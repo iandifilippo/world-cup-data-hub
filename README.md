@@ -81,7 +81,9 @@ src/
     esquema.ts            Metadata del esquema para la consola de datos
     data/                 Dataset local autogenerado
 supabase/
-  migrations/             Las 7 migraciones SQL, en orden
+  migrations/             Las 8 migraciones SQL, en orden
+  world-cup-data-hub-completo.sql
+                          Las 8 migraciones unidas en un solo script
 scripts/                  Generadores Python del dataset y del SQL
 ```
 
@@ -91,10 +93,29 @@ ejecutarlos:
 
 ```bash
 python3 scripts/gen_data.py        # construye data_build/*.json
-python3 scripts/gen_historicos.py  # partidos históricos
 python3 scripts/gen_ts.py          # regenera src/lib/data/*.ts
-python3 scripts/gen_sql.py         # regenera supabase/migrations/*.sql
+python3 scripts/gen_sql.py         # regenera las migraciones 001–007
+python3 scripts/gen_historico.py   # regenera la migración 008 y el histórico
 ```
+
+### Qué hay en la base
+
+| Tabla | Filas | Origen |
+|---|---|---|
+| `ediciones` | 23 | 22 ediciones 1930–2022 + Mundial 2026 |
+| `equipos` | 214 | 211 miembros FIFA + Checoslovaquia, URSS y Yugoslavia |
+| `sedes` | 79 | 16 estadios de 2026 + 63 sedes históricas |
+| `ranking_fifa` | 422 | 211 selecciones × ciclos 2022 y 2026 |
+| `partidos` | 215 | 104 programados de 2026 + 111 históricos |
+| `jugadores` | 22 | goleador de cada edición |
+| `fases`, `partido_equipo`, `edicion_sede`, `edicion_equipo`, `edicion_jugador` | — | relaciones del modelo E-R |
+
+El histórico cubre la fase final completa de las 22 ediciones (semifinales
+donde existieron, tercer lugar y final), la ronda final de Brasil 1950, el
+torneo ampliado de México 1970 y todas las eliminatorias de Qatar 2022. El
+total oficial de partidos de cada torneo sigue estando en la columna
+`ediciones.partidos`, y la interfaz aclara cuántos de esos partidos están
+cargados en detalle.
 
 ---
 
@@ -138,7 +159,9 @@ Para agregar una paleta nueva basta con añadir su bloque de variables en
 ## Conectar Supabase
 
 1. Crea un proyecto en [supabase.com](https://supabase.com).
-2. Abre **SQL Editor** y ejecuta las migraciones **en orden numérico**:
+2. Abre **SQL Editor**. Puedes pegar de una vez
+   `supabase/world-cup-data-hub-completo.sql`, que ya trae las ocho
+   migraciones unidas y en orden, o ejecutarlas una por una:
 
    ```
    20260908120001_schema.sql

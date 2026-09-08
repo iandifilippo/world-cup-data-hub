@@ -103,13 +103,15 @@ export function HistorialClient({
     <>
       {/* Filtros */}
       <Panel className="mb-5">
-        <div className="grid gap-4 p-5 lg:grid-cols-[1.2fr_1.4fr_1fr]">
+        <div className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[1.9fr_1.2fr_1fr]">
           <div>
             <span className="etiqueta-campo">Filtrar por década / años</span>
-            <div className="flex gap-2">
+            {/* Tres controles en una sola celda: sin anchos mínimos los
+                marcadores "Desde 1930" y "Hasta 2022" salían cortados. */}
+            <div className="flex flex-wrap gap-2">
               <select
                 aria-label="Década"
-                className="campo"
+                className="campo min-w-[7rem] flex-1"
                 value={decada}
                 onChange={(e) => reiniciar(setDecada)(e.target.value)}
               >
@@ -122,7 +124,7 @@ export function HistorialClient({
               </select>
               <input
                 aria-label="Desde el año"
-                className="campo cifras"
+                className="campo cifras min-w-[7.5rem] flex-1"
                 type="number"
                 inputMode="numeric"
                 placeholder={`Desde ${rangoAnios.min}`}
@@ -131,7 +133,7 @@ export function HistorialClient({
               />
               <input
                 aria-label="Hasta el año"
-                className="campo cifras"
+                className="campo cifras min-w-[7.5rem] flex-1"
                 type="number"
                 inputMode="numeric"
                 placeholder={`Hasta ${rangoAnios.max}`}
@@ -316,6 +318,7 @@ export function HistorialClient({
                         <th className="th">Resultado</th>
                         <th className="th">Visitante</th>
                         <th className="th">Fase</th>
+                        <th className="th">Sede</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gris-borde">
@@ -333,6 +336,10 @@ export function HistorialClient({
                           </td>
                           <td className="td">{p.equipo_visitante}</td>
                           <td className="td text-xs text-gris-texto">{p.fase}</td>
+                          <td className="td text-xs text-gris-texto">
+                            {p.nombre_estadio}
+                            <span className="text-gris-texto/70">, {p.ciudad}</span>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -340,7 +347,8 @@ export function HistorialClient({
                 </div>
               )}
               <p className="mt-2 text-xs text-gris-texto">
-                Se muestran los partidos cargados en la base para esta edición.
+                Se muestran los {partidosDetalle.length} partidos cargados en la
+                base para esta edición, de los {detalle.partidos} que se jugaron.
               </p>
             </div>
           </div>

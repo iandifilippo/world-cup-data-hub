@@ -91,14 +91,16 @@ export function CalendarioClient({ partidos }: { partidos: PartidoCalendario[] }
   return (
     <>
       <Panel className="mb-5">
-        <div className="grid gap-4 p-5 lg:grid-cols-4">
+        {/* La columna del rango de fechas pide más espacio que las demás: con
+            cuatro columnas iguales el campo nativo recortaba el "yyyy". */}
+        <div className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[1.7fr_1fr_1fr_1.2fr]">
           <div>
             <span className="etiqueta-campo">Filtrar por fecha</span>
             <div className="flex items-center gap-2">
               <input
                 aria-label="Desde la fecha"
                 type="date"
-                className="campo"
+                className="campo min-w-[9.5rem]"
                 min="2026-06-11"
                 max="2026-07-19"
                 value={desde}
@@ -111,7 +113,7 @@ export function CalendarioClient({ partidos }: { partidos: PartidoCalendario[] }
               <input
                 aria-label="Hasta la fecha"
                 type="date"
-                className="campo"
+                className="campo min-w-[9.5rem]"
                 min="2026-06-11"
                 max="2026-07-19"
                 value={hasta}
