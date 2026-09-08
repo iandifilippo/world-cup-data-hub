@@ -312,10 +312,25 @@ comment on function fn_comparar_ranking is
 # ============================================================ 003 VISTAS
 vistas = """-- =====================================================================
 -- World Cup Data Hub · 003 · Vistas de consulta para el frontend
+--
+-- Se sueltan y se vuelven a crear en lugar de usar CREATE OR REPLACE VIEW.
+-- Las migraciones 008 y 009 le agregan columnas a v_partidos_edicion,
+-- v_calendario_2026 y v_metricas_globales, y CREATE OR REPLACE no admite que
+-- una vista pierda columnas: al volver a ejecutar el script sobre una base ya
+-- actualizada fallaba con «42P16: cannot drop columns from view».
+--
+-- El orden de los DROP importa: v_metricas_globales consulta v_calendario_2026,
+-- así que tiene que soltarse antes que ella.
 -- =====================================================================
 
+drop view if exists v_metricas_globales;
+drop view if exists v_calendario_2026;
+drop view if exists v_partidos_edicion;
+drop view if exists v_ranking;
+drop view if exists v_ediciones;
+
 -- RF02 / RF03 / RF04 — Historial de Mundiales
-create or replace view v_ediciones as
+create view v_ediciones as
 select id_edicion, nombre_edicion, anio, sede, pais_sede, equipos,
        campeon, subcampeon, goleador, goles_goleador,
        asistencia_total, promedio_asistencia, partidos,
@@ -325,7 +340,7 @@ select id_edicion, nombre_edicion, anio, sede, pais_sede, equipos,
  order by anio;
 
 -- RF05 — Partidos de una edición histórica
-create or replace view v_partidos_edicion as
+create view v_partidos_edicion as
 select e.id_edicion,
        e.anio,
        p.id_partido,
@@ -349,7 +364,7 @@ select e.id_edicion,
   left join equipos ev on ev.equipo_id = pev.equipo_id;
 
 -- RF06 — Ranking FIFA con variación respecto al ciclo anterior
-create or replace view v_ranking as
+create view v_ranking as
 select r.ciclo,
        r.posicion,
        e.nombre_equipo,
@@ -368,7 +383,7 @@ select r.ciclo,
         and ant.ciclo = case r.ciclo when 2026 then 2022 else null end;
 
 -- RF08 / RF09 / RF10 — Calendario del Mundial 2026
-create or replace view v_calendario_2026 as
+create view v_calendario_2026 as
 select p.id_partido,
        p.numero_partido,
        p.fecha_hora,
@@ -401,7 +416,7 @@ select p.id_partido,
   left join ranking_fifa rv on rv.equipo_id = ev.equipo_id and rv.ciclo = 2026;
 
 -- RF01 — Métricas globales de la pantalla de Inicio
-create or replace view v_metricas_globales as
+create view v_metricas_globales as
 select
   (select count(*) from ediciones where finalizada)                          as ediciones_historicas,
   (select coalesce(sum(partidos),0) from ediciones where finalizada)         as partidos_historicos,

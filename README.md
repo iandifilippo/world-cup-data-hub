@@ -107,7 +107,7 @@ python3 scripts/gen_2026.py        # regenera la migración 009 y el Mundial 202
 | `equipos` | 214 | 211 miembros FIFA + Checoslovaquia, URSS y Yugoslavia |
 | `sedes` | 79 | 16 estadios de 2026 + 63 sedes históricas |
 | `ranking_fifa` | 422 | 211 selecciones × ciclos 2022 y 2026 |
-| `partidos` | 208 | 111 históricos (1930–2022) + 97 del Mundial 2026 |
+| `partidos` | 215 | 111 históricos (1930–2022) + los 104 del Mundial 2026 |
 | `jugadores` | 22 | goleador de cada edición |
 | `fases`, `partido_equipo`, `edicion_sede`, `edicion_equipo`, `edicion_jugador` | — | relaciones del modelo E-R |
 
@@ -120,8 +120,10 @@ cuántos de esos partidos están cargados en detalle.
 
 El Mundial 2026 se jugó del 11 de junio al 19 de julio de 2026 y lo ganó
 España, que venció 1-0 a Argentina en la prórroga de la final disputada en el
-MetLife Stadium. La migración 009 cierra esa edición con sus cifras oficiales
-y reemplaza las llaves sin sortear («Ganador SF 1») por los resultados reales.
+MetLife Stadium. Kylian Mbappé fue el goleador con 10 goles y el torneo cerró
+con 6.810.966 espectadores. La migración 009 reemplaza el Mundial 2026 entero
+—el sorteo supuesto de la propuesta y las llaves sin resolver («Ganador SF 1»)—
+por el sorteo real de los 12 grupos y los 104 partidos con su marcador.
 
 ---
 

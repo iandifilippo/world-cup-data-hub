@@ -13,7 +13,7 @@ export default async function PaginaCalendario() {
     <>
       <Encabezado
         titulo="Mundial 2026"
-        descripcion="Los 104 partidos del Mundial 2026, con el resultado de la fase de eliminación."
+        descripcion="Los 104 partidos del Mundial 2026 con su resultado, del debut a la final que ganó España."
       />
       <AvisoOrigen origen={origen} />
       <CalendarioClient partidos={datos} />

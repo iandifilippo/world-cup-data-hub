@@ -30,10 +30,13 @@ export default async function PaginaInicio() {
     .filter((r) => r.ciclo === 2026)
     .slice(0, 5);
 
-  // El Mundial 2026 ya se jugó: se muestran los últimos partidos con
-  // resultado en lugar de los primeros del calendario.
+  // El Mundial 2026 ya se jugó: se muestran los últimos partidos disputados
+  // (final, tercer puesto y semifinales) en lugar de los primeros del
+  // calendario, que era lo que tenía sentido cuando el torneo era futuro.
   const jugados = calendario.datos.filter((p) => p.goles_local !== null);
-  const destacados = (jugados.length > 0 ? jugados : calendario.datos).slice(-5).reverse();
+  const destacados = (jugados.length > 0 ? jugados : calendario.datos)
+    .slice(-5)
+    .reverse();
 
   return (
     <>
@@ -90,12 +93,11 @@ export default async function PaginaInicio() {
               {destacados.map((p) => (
                 <li
                   key={p.id_partido}
-                  className="grid grid-cols-[auto_auto_1fr] items-center gap-x-4 gap-y-1 px-5 py-3"
+                  className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-1 px-5 py-3"
                 >
                   <span className="cifras text-xs font-medium text-gris-texto">
                     {fechaCorta(p.fecha)}
                   </span>
-                  <span className="cifras text-xs text-gris-texto">{p.hora}</span>
                   <span className="flex items-center justify-end gap-2 text-sm">
                     <span className="flex items-center gap-1.5">
                       <Bandera emoji={p.bandera_local} nombre={p.equipo_local} />

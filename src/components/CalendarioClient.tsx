@@ -258,23 +258,20 @@ export function CalendarioClient({ partidos }: { partidos: PartidoCalendario[] }
                         <button
                           type="button"
                           onClick={() => setDetalle(p)}
-                          className="grid w-full grid-cols-[92px_54px_1fr_auto] items-center gap-3 px-5 py-3 text-left transition hover:bg-azul-suave/40"
+                          className="grid w-full grid-cols-[92px_1fr_auto] items-center gap-3 px-5 py-3 text-left transition hover:bg-azul-suave/40"
                         >
                           <span className="cifras text-xs font-medium text-gris-texto">
                             {fechaCorta(p.fecha)}
                           </span>
-                          <span className="cifras text-xs text-gris-texto">{p.hora}</span>
-                          <span className="flex items-center gap-2 text-sm">
+                          <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                             <Bandera emoji={p.bandera_local} nombre={p.equipo_local} />
-                            <span className="truncate font-medium">{p.equipo_local}</span>
+                            <span className="font-medium">{p.equipo_local}</span>
                             <Marcador p={p} />
                             <Bandera
                               emoji={p.bandera_visitante}
                               nombre={p.equipo_visitante}
                             />
-                            <span className="truncate font-medium">
-                              {p.equipo_visitante}
-                            </span>
+                            <span className="font-medium">{p.equipo_visitante}</span>
                           </span>
                           <Insignia tono={p.grupo ? "neutro" : "azul"}>
                             {p.grupo ? `Grupo ${p.grupo}` : p.fase}
@@ -356,18 +353,20 @@ function TarjetaPartido({
         {p.grupo ? `Grupo ${p.grupo}` : p.fase}
       </p>
       <div className="mt-3 flex items-center justify-between gap-2">
-        <span className="flex min-w-0 flex-col items-center gap-1 text-center">
+        <span className="flex min-w-0 flex-1 flex-col items-center gap-1 text-center">
           <Bandera emoji={p.bandera_local} nombre={p.equipo_local} className="text-2xl" />
-          <span className="w-full truncate text-xs font-medium">{p.equipo_local}</span>
+          <span className="w-full text-xs font-medium leading-tight">
+            {p.equipo_local}
+          </span>
         </span>
-        <Marcador p={p} />
-        <span className="flex min-w-0 flex-col items-center gap-1 text-center">
+        <Marcador p={p} className="shrink-0" />
+        <span className="flex min-w-0 flex-1 flex-col items-center gap-1 text-center">
           <Bandera
             emoji={p.bandera_visitante}
             nombre={p.equipo_visitante}
             className="text-2xl"
           />
-          <span className="w-full truncate text-xs font-medium">
+          <span className="w-full text-xs font-medium leading-tight">
             {p.equipo_visitante}
           </span>
         </span>
