@@ -1,14 +1,12 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Cada color es una variable CSS con el triplete RGB suelto ("37 99 235") en
- * lugar de un hex fijo. Así Tailwind sigue generando las variantes con opacidad
- * (`bg-azul/20`) y, al mismo tiempo, el selector de paleta puede repintar toda
- * la aplicación cambiando un atributo en <html>. Las paletas viven en
- * `src/app/globals.css`.
+ * Colores de la aplicación. Están escritos aquí una sola vez y con su hex, así
+ * que para cambiar el aspecto de toda la página basta con tocar este archivo:
+ * `azul` es el color principal, `navy` la barra lateral oscura y `lienzo` el
+ * fondo. Los nombres son los que se usan en las clases (`bg-azul`,
+ * `text-gris-texto`, `border-gris-borde`, …).
  */
-const token = (nombre: string) => `rgb(var(--c-${nombre}) / <alpha-value>)`;
-
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
@@ -16,38 +14,39 @@ const config: Config = {
       colors: {
         // Barra lateral y superficies oscuras.
         navy: {
-          900: token("navy-900"),
-          800: token("navy-800"),
-          700: token("navy-700"),
-          600: token("navy-600"),
-          texto: token("navy-texto"),
+          900: "#081527",
+          800: "#0B1D36",
+          700: "#12294A",
+          600: "#1B3A63",
+          texto: "#CBD5E1",
         },
-        // Color primario de la paleta activa.
+        // Color principal: el azul de la FIFA.
         azul: {
-          DEFAULT: token("azul"),
-          claro: token("azul-claro"),
-          suave: token("azul-suave"),
-          contraste: token("azul-contraste"),
+          DEFAULT: "#2563EB",
+          claro: "#3B82F6",
+          suave: "#DBEAFE",
+          contraste: "#FFFFFF",
         },
-        lienzo: token("lienzo"),
-        superficie: token("superficie"),
-        tinta: token("tinta"),
+        lienzo: "#F1F5F9", // fondo de la página
+        superficie: "#FFFFFF", // fondo de tarjetas y paneles
+        tinta: "#0F172A", // color del texto
         gris: {
-          borde: token("gris-borde"),
-          texto: token("gris-texto"),
-          suave: token("gris-suave"),
+          borde: "#E2E8F0",
+          texto: "#64748B",
+          suave: "#F8FAFC",
         },
-        acento: token("acento"),
-        sube: token("sube"),
-        baja: token("baja"),
+        acento: "#FBBF24", // dorado del trofeo
+        sube: "#16A34A", // el equipo subió en el ranking
+        baja: "#DC2626", // el equipo bajó en el ranking
+        // Aviso amarillo (dataset local) y confirmación verde (participa 2026).
         aviso: {
-          borde: token("aviso-borde"),
-          fondo: token("aviso-fondo"),
-          texto: token("aviso-texto"),
+          borde: "#FDE68A",
+          fondo: "#FFFBEB",
+          texto: "#92400E",
         },
         exito: {
-          fondo: token("exito-fondo"),
-          texto: token("exito-texto"),
+          fondo: "#ECFDF5",
+          texto: "#047857",
         },
       },
       fontFamily: {
@@ -56,10 +55,9 @@ const config: Config = {
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       boxShadow: {
-        tarjeta:
-          "0 1px 2px rgb(var(--c-sombra) / 0.04), 0 1px 3px rgb(var(--c-sombra) / 0.06)",
-        panel: "0 4px 20px rgb(var(--c-sombra) / 0.10)",
-        modal: "0 24px 60px rgb(var(--c-sombra) / 0.28)",
+        tarjeta: "0 1px 2px rgb(15 23 42 / 0.04), 0 1px 3px rgb(15 23 42 / 0.06)",
+        panel: "0 4px 20px rgb(15 23 42 / 0.10)",
+        modal: "0 24px 60px rgb(15 23 42 / 0.28)",
       },
     },
   },

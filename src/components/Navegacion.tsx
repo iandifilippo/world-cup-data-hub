@@ -12,7 +12,6 @@ import {
   IconoRanking,
   IconoTrofeo,
 } from "@/components/Icons";
-import { SelectorPaleta } from "@/components/Paleta";
 
 interface Modulo {
   href: string;
@@ -78,15 +77,12 @@ export function BarraLateral() {
         })}
       </nav>
 
-      {/* Pie: herramientas del proyecto (consola de datos y apariencia). */}
+      {/* Pie: herramientas del proyecto. */}
       <div className="mt-auto border-t border-white/10 p-3">
         <p className="px-1 pb-2 text-[10px] font-semibold uppercase tracking-wider text-navy-texto/70">
           Proyecto
         </p>
-        <div className="flex flex-col gap-1.5">
-          <ConsolaDatos variante="lateral" />
-          <SelectorPaleta variante="lateral" />
-        </div>
+        <ConsolaDatos variante="lateral" />
         <p className="mt-2.5 px-1 text-[11px] leading-relaxed text-navy-texto/80">
           Historia del Mundial, Ranking FIFA y calendario 2026 en un solo lugar.
         </p>
@@ -136,10 +132,9 @@ export function BarraSuperior() {
           })}
         </nav>
 
-        {/* Sin barra lateral, las herramientas viven aquí. */}
-        <div className="flex shrink-0 items-center gap-1 border-l border-gris-borde pl-2 lg:hidden">
+        {/* Sin barra lateral, la consola de datos vive aquí. */}
+        <div className="flex shrink-0 items-center border-l border-gris-borde pl-2 lg:hidden">
           <ConsolaDatos variante="compacto" />
-          <SelectorPaleta variante="compacto" />
         </div>
       </div>
     </header>

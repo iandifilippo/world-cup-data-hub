@@ -60,14 +60,13 @@ src/
     ranking/page.tsx      Ranking FIFA comparativo (RF06, RF07)
     calendario/page.tsx   Calendario 2026 (RF08–RF10)
     not-found.tsx         404
-    globals.css           Paletas, tokens de diseño y clases compartidas
+    globals.css           Estilos base y clases compartidas (.tarjeta, .btn, .td…)
   components/
     Navegacion.tsx        Sidebar oscuro + tabs superiores + pie de proyecto
     Piezas.tsx            Piezas compartidas: tarjetas de métrica, paneles,
                           banderas, insignias, filas de datos y buscador
     Icons.tsx             Iconografía SVG propia
     Destacado.tsx         Destacado histórico (panel inferior de Inicio)
-    Paleta.tsx            Selector de paleta de colores
     ConsolaDatos.tsx      Consola de inserción al estilo de Supabase
     HistorialClient.tsx   Filtros, orden, paginación y detalle de edición
     RankingClient.tsx     Tabla de ranking y comparador 2022 vs 2026
@@ -78,7 +77,6 @@ src/
     supabase.ts           Cliente Supabase opcional
     queries.ts            Acceso a datos con respaldo local
     comparar.ts           Comparación entre ciclos (regla RN10)
-    paletas.ts            Definición de las paletas disponibles
     esquema.ts            Metadata del esquema para la consola de datos
     data/                 Dataset local autogenerado
 supabase/
@@ -152,16 +150,13 @@ columna— y abajo se arma el `INSERT` correspondiente en vivo.
 Sin Supabase configurado la consola no escribe en ninguna base; sirve como
 generador de SQL.
 
-### Paleta de la página
+### Colores
 
-Cuatro paletas —Clásico, Esmeralda, Atardecer y Noche (modo oscuro)—. Cada una
-es un bloque de variables CSS en `globals.css`; el selector escribe
-`data-paleta` en `<html>` y guarda la elección en `localStorage`. Un script
-mínimo en `<head>` la vuelve a aplicar antes del primer pintado, así que no hay
-parpadeo al recargar.
-
-Para agregar una paleta nueva basta con añadir su bloque de variables en
-`globals.css` y una entrada en `src/lib/paletas.ts`.
+Todos los colores están en `tailwind.config.ts`, escritos con su hex y con
+nombres en español: `azul` es el principal, `navy` la barra lateral, `lienzo`
+el fondo y `tinta` el texto. Se usan como cualquier clase de Tailwind
+(`bg-azul`, `text-gris-texto`, `border-gris-borde`). Para cambiar el aspecto de
+toda la aplicación se toca ese archivo y nada más.
 
 ---
 

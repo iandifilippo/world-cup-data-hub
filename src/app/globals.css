@@ -2,170 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* =====================================================================
-   PALETAS
-   Cada paleta define los mismos tokens con tripletes RGB sueltos. El
-   selector (`src/components/Paleta.tsx`) escribe data-paleta="…" en <html>
-   y toda la aplicación se repinta sin recargar. La paleta "clasico" vive en
-   :root para que el HTML del servidor ya salga pintado.
-   ===================================================================== */
-
-:root,
-[data-paleta="clasico"] {
-  color-scheme: light;
-
-  --c-navy-900: 8 21 39;
-  --c-navy-800: 11 29 54;
-  --c-navy-700: 18 41 74;
-  --c-navy-600: 27 58 99;
-  --c-navy-texto: 203 213 225;
-
-  --c-azul: 37 99 235;
-  --c-azul-claro: 59 130 246;
-  --c-azul-suave: 219 234 254;
-  --c-azul-contraste: 255 255 255;
-
-  --c-lienzo: 241 245 249;
-  --c-superficie: 255 255 255;
-  --c-tinta: 15 23 42;
-
-  --c-gris-borde: 226 232 240;
-  --c-gris-texto: 100 116 139;
-  --c-gris-suave: 248 250 252;
-
-  --c-acento: 251 191 36;
-  --c-sube: 22 163 74;
-  --c-baja: 220 38 38;
-
-  --c-aviso-borde: 253 230 138;
-  --c-aviso-fondo: 255 251 235;
-  --c-aviso-texto: 146 64 14;
-
-  --c-exito-fondo: 236 253 245;
-  --c-exito-texto: 4 120 87;
-
-  --c-sombra: 15 23 42;
-}
-
-[data-paleta="esmeralda"] {
-  color-scheme: light;
-
-  --c-navy-900: 4 35 26;
-  --c-navy-800: 6 53 40;
-  --c-navy-700: 10 76 57;
-  --c-navy-600: 16 104 77;
-  --c-navy-texto: 190 220 206;
-
-  --c-azul: 5 150 105;
-  --c-azul-claro: 16 185 129;
-  --c-azul-suave: 209 250 229;
-  --c-azul-contraste: 255 255 255;
-
-  --c-lienzo: 240 247 243;
-  --c-superficie: 255 255 255;
-  --c-tinta: 11 35 26;
-
-  --c-gris-borde: 219 232 225;
-  --c-gris-texto: 90 114 104;
-  --c-gris-suave: 246 250 248;
-
-  --c-acento: 245 158 11;
-  --c-sube: 21 128 61;
-  --c-baja: 190 24 93;
-
-  --c-aviso-borde: 253 230 138;
-  --c-aviso-fondo: 255 251 235;
-  --c-aviso-texto: 146 64 14;
-
-  --c-exito-fondo: 220 252 231;
-  --c-exito-texto: 21 128 61;
-
-  --c-sombra: 6 53 40;
-}
-
-[data-paleta="atardecer"] {
-  color-scheme: light;
-
-  --c-navy-900: 33 9 58;
-  --c-navy-800: 44 16 80;
-  --c-navy-700: 61 26 107;
-  --c-navy-600: 79 36 137;
-  --c-navy-texto: 216 205 235;
-
-  --c-azul: 124 58 237;
-  --c-azul-claro: 168 85 247;
-  --c-azul-suave: 237 233 254;
-  --c-azul-contraste: 255 255 255;
-
-  --c-lienzo: 246 243 251;
-  --c-superficie: 255 255 255;
-  --c-tinta: 30 16 51;
-
-  --c-gris-borde: 230 224 240;
-  --c-gris-texto: 107 98 128;
-  --c-gris-suave: 250 248 253;
-
-  --c-acento: 244 114 182;
-  --c-sube: 13 148 136;
-  --c-baja: 219 39 119;
-
-  --c-aviso-borde: 253 230 138;
-  --c-aviso-fondo: 255 251 235;
-  --c-aviso-texto: 146 64 14;
-
-  --c-exito-fondo: 240 253 250;
-  --c-exito-texto: 15 118 110;
-
-  --c-sombra: 44 16 80;
-}
-
-[data-paleta="noche"] {
-  color-scheme: dark;
-
-  --c-navy-900: 5 7 13;
-  --c-navy-800: 10 15 26;
-  --c-navy-700: 22 32 47;
-  --c-navy-600: 31 44 64;
-  --c-navy-texto: 148 163 184;
-
-  --c-azul: 59 130 246;
-  --c-azul-claro: 96 165 250;
-  --c-azul-suave: 30 45 68;
-  --c-azul-contraste: 255 255 255;
-
-  --c-lienzo: 11 17 25;
-  --c-superficie: 19 27 38;
-  --c-tinta: 230 237 246;
-
-  --c-gris-borde: 37 50 67;
-  --c-gris-texto: 147 164 184;
-  --c-gris-suave: 24 34 49;
-
-  --c-acento: 251 191 36;
-  --c-sube: 52 211 153;
-  --c-baja: 248 113 113;
-
-  --c-aviso-borde: 87 67 15;
-  --c-aviso-fondo: 34 27 8;
-  --c-aviso-texto: 252 211 77;
-
-  --c-exito-fondo: 11 44 34;
-  --c-exito-texto: 52 211 153;
-
-  --c-sombra: 0 0 0;
-}
-
-/* La flecha ("paloma") de los desplegables se guarda como variable porque una
-   url() no puede interpolar otras variables: basta con dos tonos, uno para las
-   paletas de fondo claro y otro más luminoso para "noche". Ambas reglas tienen
-   la misma especificidad, así que la de abajo gana cuando la paleta es oscura. */
-:root {
-  --paloma: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2364748B' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
-}
-
-[data-paleta="noche"] {
-  --paloma: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2393A4B8' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
-}
+/* Los colores y las sombras viven en `tailwind.config.ts`. Aquí solo quedan
+   los estilos base y las clases que se repiten en muchas pantallas. */
 
 html,
 body {
@@ -177,8 +15,8 @@ body {
   font-feature-settings: "cv02", "cv03", "cv04", "tnum";
 }
 
-/* Números tabulares en todas las tablas de datos: las columnas de puntos y
-   posiciones quedan alineadas verticalmente aunque cambien de ancho. */
+/* Números tabulares en las tablas de datos: las columnas de puntos y
+   posiciones quedan alineadas aunque cambien de ancho. */
 .cifras {
   font-variant-numeric: tabular-nums;
 }
@@ -196,11 +34,11 @@ body {
            disabled:cursor-not-allowed disabled:bg-gris-suave disabled:text-gris-texto;
   }
 
-  /* Flecha propia del desplegable: cada navegador dibuja la suya y no
-     combinan con la paleta, así que se oculta la nativa. */
+  /* Flecha propia del desplegable: cada navegador dibuja la suya y no combinan
+     con el resto del diseño, así que se oculta la nativa. */
   select.campo {
     @apply appearance-none bg-no-repeat pr-9;
-    background-image: var(--paloma);
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2364748B' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
     background-position: right 0.75rem center;
     background-size: 1rem 1rem;
   }
@@ -209,17 +47,12 @@ body {
     display: none;
   }
 
-  /* El icono del <input type="date"> casi no se ve en la paleta oscura. */
-  [data-paleta="noche"] input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1) opacity(0.65);
-  }
-
   .etiqueta-campo {
     @apply mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-gris-texto;
   }
 
-  /* BOTONES — todas las variantes comparten borde de 1px y alto, así
-     activar o desactivar uno no mueve la fila. */
+  /* BOTONES — todas las variantes comparten borde de 1px y alto, así activar o
+     desactivar uno no mueve la fila. */
   .btn {
     @apply inline-flex select-none items-center justify-center gap-1.5 rounded-lg
            border border-transparent px-3.5 py-2 text-sm font-semibold leading-5
@@ -254,6 +87,7 @@ body {
            text-gris-texto transition hover:bg-gris-suave hover:text-tinta;
   }
 
+  /* Celdas de las tablas de datos. */
   .th {
     @apply whitespace-nowrap px-4 py-3 text-left text-[11px] font-semibold
            uppercase tracking-wide text-gris-texto;
@@ -268,9 +102,9 @@ body {
   }
 }
 
-/* Foco visible y consistente para navegación por teclado. */
+/* Foco visible y consistente para quien navega con el teclado. */
 :where(a, button, select, input, textarea, [tabindex]):focus-visible {
-  outline: 2px solid rgb(var(--c-azul));
+  outline: 2px solid #2563eb;
   outline-offset: 2px;
   border-radius: 6px;
 }
@@ -278,7 +112,7 @@ body {
 /* Barra de desplazamiento discreta, para las zonas de fondo oscuro. */
 .barra-fina {
   scrollbar-width: thin;
-  scrollbar-color: rgb(var(--c-gris-texto) / 0.45) transparent;
+  scrollbar-color: rgb(100 116 139 / 0.45) transparent;
 }
 
 .barra-fina::-webkit-scrollbar {
@@ -287,7 +121,7 @@ body {
 }
 
 .barra-fina::-webkit-scrollbar-thumb {
-  background-color: rgb(var(--c-gris-texto) / 0.4);
+  background-color: rgb(100 116 139 / 0.4);
   border-radius: 999px;
 }
 
