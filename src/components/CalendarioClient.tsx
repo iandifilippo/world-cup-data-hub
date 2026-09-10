@@ -2,8 +2,15 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 
-import { IconoBuscar, IconoCerrar, IconoEstadio } from "@/components/Icons";
-import { Bandera, Insignia, Marcador, Panel, Vacio } from "@/components/Piezas";
+import { IconoCerrar, IconoEstadio } from "@/components/Icons";
+import {
+  Bandera,
+  CampoBusqueda,
+  Insignia,
+  Marcador,
+  Panel,
+  Vacio,
+} from "@/components/Piezas";
 import { claveMes, fechaCorta, mesLargo, normalizar, puntos } from "@/lib/format";
 import type { Fase, PartidoCalendario } from "@/lib/types";
 
@@ -91,8 +98,7 @@ export function CalendarioClient({ partidos }: { partidos: PartidoCalendario[] }
   return (
     <>
       <Panel className="mb-5">
-        {/* La columna del rango de fechas pide más espacio que las demás: con
-            cuatro columnas iguales el campo nativo recortaba el "yyyy". */}
+        {/* La columna de fechas lleva dos campos, por eso pide más ancho. */}
         <div className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[1.7fr_1fr_1fr_1.2fr]">
           <div>
             <span className="etiqueta-campo">Filtrar por fecha</span>
@@ -169,25 +175,16 @@ export function CalendarioClient({ partidos }: { partidos: PartidoCalendario[] }
             </select>
           </div>
 
-          <div>
-            <label className="etiqueta-campo" htmlFor="buscar-partido">
-              Buscar equipo o sede
-            </label>
-            <div className="relative">
-              <input
-                id="buscar-partido"
-                className="campo pr-10"
-                type="search"
-                placeholder="Buscar equipo…"
-                value={busqueda}
-                onChange={(e) => {
-                  setBusqueda(e.target.value);
-                  setMostrar(LOTE);
-                }}
-              />
-              <IconoBuscar className="pointer-events-none absolute right-3 top-2.5 h-4 w-4 text-gris-texto" />
-            </div>
-          </div>
+          <CampoBusqueda
+            id="buscar-partido"
+            etiqueta="Buscar equipo o sede"
+            placeholder="Buscar equipo…"
+            valor={busqueda}
+            onCambio={(v) => {
+              setBusqueda(v);
+              setMostrar(LOTE);
+            }}
+          />
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-t border-gris-borde px-5 py-3">
@@ -286,18 +283,22 @@ export function CalendarioClient({ partidos }: { partidos: PartidoCalendario[] }
           )}
         </div>
 
-        {/* RF10 — detalle del partido */}
-        <div className="xl:sticky xl:top-20 xl:self-start">
-          {detalle ? (
-            <DetallePartido p={detalle} onCerrar={() => setDetalle(null)} />
-          ) : (
-            <Panel titulo="Detalle del partido">
-              <Vacio
-                mensaje="Elige un partido para ver el detalle."
-                accion="Verás las banderas, el estadio y la comparación de ranking FIFA."
-              />
-            </Panel>
-          )}
+        {/* RF10 — detalle del partido. En pantallas angostas aparece debajo de
+            la lista y sólo cuando hay un partido elegido: el panel vacío
+            ocupaba media pantalla sin decir nada. */}
+        <div className={detalle ? "" : "hidden xl:block"}>
+          <div className="xl:sticky xl:top-20">
+            {detalle ? (
+              <DetallePartido p={detalle} onCerrar={() => setDetalle(null)} />
+            ) : (
+              <Panel titulo="Detalle del partido">
+                <Vacio
+                  mensaje="Elige un partido para ver el detalle."
+                  accion="Verás las banderas, el estadio y la comparación de ranking FIFA."
+                />
+              </Panel>
+            )}
+          </div>
         </div>
       </div>
     </>

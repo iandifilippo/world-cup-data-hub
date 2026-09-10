@@ -1,9 +1,16 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState } from "react";
 
-import { IconoBuscar } from "@/components/Icons";
-import { Bandera, Insignia, Panel, Variacion, Vacio } from "@/components/Piezas";
+import {
+  Bandera,
+  CampoBusqueda,
+  Insignia,
+  Panel,
+  Renglon,
+  Variacion,
+  Vacio,
+} from "@/components/Piezas";
 import { normalizar, puntos } from "@/lib/format";
 import { compararSeleccion } from "@/lib/comparar";
 import type { Confederacion, PartidoCalendario, RankingFila } from "@/lib/types";
@@ -104,22 +111,13 @@ export function RankingClient({
               ))}
             </select>
           </div>
-          <div>
-            <label className="etiqueta-campo" htmlFor="buscar-seleccion">
-              Buscar
-            </label>
-            <div className="relative">
-              <input
-                id="buscar-seleccion"
-                className="campo pr-10"
-                type="search"
-                placeholder="Buscar selección o código…"
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-              />
-              <IconoBuscar className="pointer-events-none absolute right-3 top-2.5 h-4 w-4 text-gris-texto" />
-            </div>
-          </div>
+          <CampoBusqueda
+            id="buscar-seleccion"
+            etiqueta="Buscar"
+            placeholder="Buscar selección o código…"
+            valor={busqueda}
+            onCambio={setBusqueda}
+          />
         </div>
       </Panel>
 
@@ -182,7 +180,9 @@ export function RankingClient({
               onClick={() => setVerTodo((v) => !v)}
               className="btn btn-enlace btn-sm"
             >
-              {verTodo ? "Mostrar solo las primeras 60" : "Ver las 211 selecciones"}
+              {verTodo
+                ? `Mostrar solo las primeras ${TOPE_VISIBLE}`
+                : `Ver las ${filtradas.length} selecciones`}
             </button>
           ) : null}
         </div>
@@ -256,13 +256,8 @@ export function RankingClient({
                       </th>
                       <td className="td cifras">{puntos(comparacion.puntos_2022)}</td>
                       <td className="td cifras">{puntos(comparacion.puntos_2026)}</td>
-                      <td
-                        className={`td cifras font-semibold ${
-                          (comparacion.dif_puntos ?? 0) >= 0 ? "text-sube" : "text-baja"
-                        }`}
-                      >
-                        {(comparacion.dif_puntos ?? 0) >= 0 ? "+" : ""}
-                        {puntos(comparacion.dif_puntos)}
+                      <td className="td">
+                        <DifPuntos valor={comparacion.dif_puntos} />
                       </td>
                     </tr>
                     <tr>
@@ -297,31 +292,28 @@ export function RankingClient({
         {comparacion?.comparable ? (
           <Panel titulo={`Comparación — ${comparacion.nombre_equipo} (${comparacion.codigo_pais})`}>
             <dl className="divide-y divide-gris-borde text-sm">
-              <Renglon k="Ranking 2022" v={String(comparacion.posicion_2022)} />
-              <Renglon k="Ranking 2026" v={String(comparacion.posicion_2026)} />
+              <Renglon etiqueta="Ranking 2022" valor={comparacion.posicion_2022} />
+              <Renglon etiqueta="Ranking 2026" valor={comparacion.posicion_2026} />
               <Renglon
-                k="Diferencia posiciones"
-                nodo={<Variacion valor={comparacion.dif_posiciones} />}
+                etiqueta="Diferencia posiciones"
+                valor={<Variacion valor={comparacion.dif_posiciones} />}
               />
-              <Renglon k="Puntos 2022" v={puntos(comparacion.puntos_2022)} />
-              <Renglon k="Puntos 2026" v={puntos(comparacion.puntos_2026)} />
               <Renglon
-                k="Diferencia puntos"
-                nodo={
-                  <span
-                    className={`cifras font-semibold ${
-                      (comparacion.dif_puntos ?? 0) >= 0 ? "text-sube" : "text-baja"
-                    }`}
-                  >
-                    {(comparacion.dif_puntos ?? 0) >= 0 ? "+" : ""}
-                    {puntos(comparacion.dif_puntos)}
-                  </span>
-                }
+                etiqueta="Puntos 2022"
+                valor={puntos(comparacion.puntos_2022)}
               />
-              <Renglon k="Confederación" v={comparacion.confederacion} />
               <Renglon
-                k="Participación 2026"
-                nodo={
+                etiqueta="Puntos 2026"
+                valor={puntos(comparacion.puntos_2026)}
+              />
+              <Renglon
+                etiqueta="Diferencia puntos"
+                valor={<DifPuntos valor={comparacion.dif_puntos} />}
+              />
+              <Renglon etiqueta="Confederación" valor={comparacion.confederacion} />
+              <Renglon
+                etiqueta="Participación 2026"
+                valor={
                   comparacion.participa_2026 ? (
                     <Insignia tono="verde">Sí</Insignia>
                   ) : (
@@ -337,19 +329,13 @@ export function RankingClient({
   );
 }
 
-function Renglon({
-  k,
-  v,
-  nodo,
-}: {
-  k: string;
-  v?: string;
-  nodo?: ReactNode;
-}) {
+/** Diferencia de puntos entre ciclos, con signo y color según suba o baje. */
+function DifPuntos({ valor }: { valor: number | null }) {
+  if (valor === null) return <span className="text-gris-texto">—</span>;
   return (
-    <div className="flex items-center justify-between gap-4 px-5 py-2.5">
-      <dt className="text-gris-texto">{k}</dt>
-      <dd className="cifras font-medium">{nodo ?? v}</dd>
-    </div>
+    <span className={`cifras font-semibold ${valor >= 0 ? "text-sube" : "text-baja"}`}>
+      {valor >= 0 ? "+" : ""}
+      {puntos(valor)}
+    </span>
   );
 }

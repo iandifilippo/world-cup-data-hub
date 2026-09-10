@@ -18,6 +18,9 @@ import { Destacado } from "@/components/Destacado";
 import { fechaCorta, puntos } from "@/lib/format";
 import { getCalendario, getEdiciones, getMetricas, getRanking } from "@/lib/queries";
 
+/** Cuántas filas se muestran en los paneles de resumen. */
+const RESUMEN = 5;
+
 export default async function PaginaInicio() {
   const [metricas, ediciones, ranking, calendario] = await Promise.all([
     getMetricas(),
@@ -26,16 +29,13 @@ export default async function PaginaInicio() {
     getCalendario(),
   ]);
 
-  const lideres = ranking.datos
-    .filter((r) => r.ciclo === 2026)
-    .slice(0, 5);
+  const lideres = ranking.datos.filter((r) => r.ciclo === 2026).slice(0, RESUMEN);
 
-  // El Mundial 2026 ya se jugó: se muestran los últimos partidos disputados
-  // (final, tercer puesto y semifinales) en lugar de los primeros del
-  // calendario, que era lo que tenía sentido cuando el torneo era futuro.
+  // El Mundial 2026 ya se jugó, así que el panel muestra los últimos partidos
+  // disputados (final, tercer puesto y semifinales) y no los primeros.
   const jugados = calendario.datos.filter((p) => p.goles_local !== null);
-  const destacados = (jugados.length > 0 ? jugados : calendario.datos)
-    .slice(-5)
+  const ultimos = (jugados.length > 0 ? jugados : calendario.datos)
+    .slice(-RESUMEN)
     .reverse();
 
   return (
@@ -52,7 +52,7 @@ export default async function PaginaInicio() {
       <AvisoOrigen origen={metricas.origen} />
 
       {/* RF01 — métricas globales */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <TarjetaMetrica
           icono={<IconoTrofeo className="h-6 w-6" />}
           etiqueta="Ediciones históricas"
@@ -79,76 +79,68 @@ export default async function PaginaInicio() {
         />
       </div>
 
-      {/* El destacado histórico (RF11) ocupa la columna izquierda y se queda
-          a la vista mientras se recorren los paneles de la derecha. */}
-      <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
-        <div className="lg:sticky lg:top-20 lg:self-start">
-          <Destacado ediciones={ediciones.datos} />
-        </div>
-
-        <div className="grid min-w-0 gap-5">
-          {/* Resultados del Mundial 2026 */}
-          <Panel titulo="Mundial 2026 · últimos resultados">
-            <ul className="divide-y divide-gris-borde">
-              {destacados.map((p) => (
-                <li
-                  key={p.id_partido}
-                  className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-1 px-5 py-3"
-                >
-                  <span className="cifras text-xs font-medium text-gris-texto">
-                    {fechaCorta(p.fecha)}
-                  </span>
-                  <span className="flex items-center justify-end gap-2 text-sm">
-                    <span className="flex items-center gap-1.5">
-                      <Bandera emoji={p.bandera_local} nombre={p.equipo_local} />
-                      <span className="font-medium">{p.equipo_local}</span>
-                    </span>
-                    <Marcador p={p} />
-                    <span className="flex items-center gap-1.5">
-                      <Bandera emoji={p.bandera_visitante} nombre={p.equipo_visitante} />
-                      <span className="font-medium">{p.equipo_visitante}</span>
-                    </span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <div className="border-t border-gris-borde px-5 py-2.5 text-right">
-              <Link
-                href="/calendario"
-                className="btn btn-enlace text-sm font-semibold"
+      {/* Los dos paneles de resumen van lado a lado como en el mockup y se
+          apilan en una sola columna cuando la pantalla es angosta. */}
+      <div className="mt-5 grid gap-5 lg:grid-cols-2">
+        <Panel titulo="Mundial 2026 · últimos resultados">
+          <ul className="divide-y divide-gris-borde">
+            {ultimos.map((p) => (
+              <li
+                key={p.id_partido}
+                className="flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-3 text-sm"
               >
-                Ver el calendario completo
-                <IconoFlecha className="h-4 w-4" />
-              </Link>
-            </div>
-          </Panel>
+                <span className="cifras text-xs font-medium text-gris-texto">
+                  {fechaCorta(p.fecha)}
+                </span>
+                <span className="ml-auto flex flex-wrap items-center justify-end gap-x-2 gap-y-1">
+                  <Bandera emoji={p.bandera_local} nombre={p.equipo_local} />
+                  <span className="font-medium">{p.equipo_local}</span>
+                  <Marcador p={p} />
+                  <Bandera emoji={p.bandera_visitante} nombre={p.equipo_visitante} />
+                  <span className="font-medium">{p.equipo_visitante}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <PieEnlace href="/calendario">Ver el calendario completo</PieEnlace>
+        </Panel>
 
-          {/* Líderes del ranking */}
-          <Panel titulo="Líderes del ranking 2026">
-            <ol className="divide-y divide-gris-borde">
-              {lideres.map((r) => (
-                <li
-                  key={r.codigo_pais}
-                  className="flex items-center gap-3 px-5 py-3 text-sm"
-                >
-                  <span className="cifras w-4 text-gris-texto">{r.posicion}</span>
-                  <Bandera emoji={r.bandera} nombre={r.nombre_equipo} />
-                  <span className="font-medium">{r.nombre_equipo}</span>
-                  <span className="cifras ml-auto font-semibold">
-                    {puntos(r.puntos)} pts
-                  </span>
-                </li>
-              ))}
-            </ol>
-            <div className="border-t border-gris-borde px-5 py-2.5 text-right">
-              <Link href="/ranking" className="btn btn-enlace text-sm font-semibold">
-                Ver ranking completo
-                <IconoFlecha className="h-4 w-4" />
-              </Link>
-            </div>
-          </Panel>
-        </div>
+        <Panel titulo="Líderes del ranking 2026">
+          <ol className="divide-y divide-gris-borde">
+            {lideres.map((r) => (
+              <li
+                key={r.codigo_pais}
+                className="flex items-center gap-3 px-5 py-3 text-sm"
+              >
+                <span className="cifras w-4 text-gris-texto">{r.posicion}</span>
+                <Bandera emoji={r.bandera} nombre={r.nombre_equipo} />
+                <span className="min-w-0 truncate font-medium">{r.nombre_equipo}</span>
+                <span className="cifras ml-auto shrink-0 font-semibold">
+                  {puntos(r.puntos)} pts
+                </span>
+              </li>
+            ))}
+          </ol>
+          <PieEnlace href="/ranking">Ver ranking completo</PieEnlace>
+        </Panel>
+      </div>
+
+      {/* RF11 — destacado histórico, a lo ancho de la página. */}
+      <div className="mt-5">
+        <Destacado ediciones={ediciones.datos} />
       </div>
     </>
+  );
+}
+
+/** Enlace del pie de un panel de resumen ("Ver … completo →"). */
+function PieEnlace({ href, children }: { href: string; children: string }) {
+  return (
+    <div className="border-t border-gris-borde px-5 py-2.5 text-right">
+      <Link href={href} className="btn btn-enlace text-sm font-semibold">
+        {children}
+        <IconoFlecha className="h-4 w-4" />
+      </Link>
+    </div>
   );
 }

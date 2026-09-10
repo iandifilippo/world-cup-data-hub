@@ -34,10 +34,9 @@ function esActivo(pathname: string, href: string): boolean {
 }
 
 /**
- * La barra lateral se queda fija ocupando exactamente la altura de la ventana
- * (`sticky` + `h-screen`) y hace scroll por dentro. Antes crecía hasta el alto
- * total del documento, así que en las páginas largas su pie quedaba muy por
- * debajo del borde inferior de la pantalla y no se alcanzaba a ver.
+ * Barra lateral de escritorio. Es `sticky` y mide exactamente el alto de la
+ * ventana (`h-screen`), así que hace scroll por dentro y su pie siempre se ve.
+ * En pantallas menores a `lg` se oculta y manda la barra superior.
  */
 export function BarraLateral() {
   const pathname = usePathname();
@@ -79,8 +78,7 @@ export function BarraLateral() {
         })}
       </nav>
 
-      {/* Pie de la barra lateral: herramientas del proyecto, al estilo del
-          panel de Supabase (consola de datos y apariencia). */}
+      {/* Pie: herramientas del proyecto (consola de datos y apariencia). */}
       <div className="mt-auto border-t border-white/10 p-3">
         <p className="px-1 pb-2 text-[10px] font-semibold uppercase tracking-wider text-navy-texto/70">
           Proyecto
@@ -103,8 +101,7 @@ export function BarraSuperior() {
   return (
     <header className="sticky top-0 z-20 border-b border-gris-borde bg-superficie/95 backdrop-blur">
       <div className="flex items-center gap-4 px-5 py-3 sm:px-8">
-        {/* En pantallas angostas solo queda el trofeo: el nombre completo
-            envolvía en cuatro líneas y aplastaba la navegación. */}
+        {/* En móvil sólo el trofeo; el nombre completo no cabe. */}
         <Link href="/" className="flex shrink-0 items-center gap-2 lg:hidden">
           <IconoTrofeo className="h-6 w-6 text-azul" />
           <span className="hidden whitespace-nowrap text-sm font-semibold sm:inline">
@@ -139,8 +136,7 @@ export function BarraSuperior() {
           })}
         </nav>
 
-        {/* En pantallas sin barra lateral, las mismas herramientas viajan aquí
-            para que sigan estando a un clic. */}
+        {/* Sin barra lateral, las herramientas viven aquí. */}
         <div className="flex shrink-0 items-center gap-1 border-l border-gris-borde pl-2 lg:hidden">
           <ConsolaDatos variante="compacto" />
           <SelectorPaleta variante="compacto" />

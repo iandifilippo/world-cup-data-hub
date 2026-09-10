@@ -196,9 +196,8 @@ body {
            disabled:cursor-not-allowed disabled:bg-gris-suave disabled:text-gris-texto;
   }
 
-  /* La "paloma" del desplegable: los navegadores dibujan una flecha distinta
-     cada uno (y en Safari la pintan encima del texto). Se quita la nativa y se
-     dibuja una propia, siempre en el mismo sitio y con el color de la paleta. */
+  /* Flecha propia del desplegable: cada navegador dibuja la suya y no
+     combinan con la paleta, así que se oculta la nativa. */
   select.campo {
     @apply appearance-none bg-no-repeat pr-9;
     background-image: var(--paloma);
@@ -210,8 +209,7 @@ body {
     display: none;
   }
 
-  /* El icono nativo del <input type="date"> es casi invisible en la paleta
-     oscura; se invierte para que conserve el contraste. */
+  /* El icono del <input type="date"> casi no se ve en la paleta oscura. */
   [data-paleta="noche"] input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1) opacity(0.65);
   }
@@ -220,9 +218,8 @@ body {
     @apply mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-gris-texto;
   }
 
-  /* ----------------------------------------------------------- BOTONES
-     Todas las variantes comparten el mismo borde de 1px y el mismo alto, así
-     que activar o desactivar un botón ya no mueve la fila un píxel. */
+  /* BOTONES — todas las variantes comparten borde de 1px y alto, así
+     activar o desactivar uno no mueve la fila. */
   .btn {
     @apply inline-flex select-none items-center justify-center gap-1.5 rounded-lg
            border border-transparent px-3.5 py-2 text-sm font-semibold leading-5
@@ -278,8 +275,7 @@ body {
   border-radius: 6px;
 }
 
-/* Barras de desplazamiento propias: la nativa clara se veía como una franja
-   blanca sobre la barra lateral oscura y sobre la paleta "noche". */
+/* Barra de desplazamiento discreta, para las zonas de fondo oscuro. */
 .barra-fina {
   scrollbar-width: thin;
   scrollbar-color: rgb(var(--c-gris-texto) / 0.45) transparent;

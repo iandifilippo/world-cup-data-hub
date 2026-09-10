@@ -171,38 +171,6 @@ export function IconoPaloma(props: Props) {
   );
 }
 
-export function IconoAnterior(props: Props) {
-  return (
-    <svg {...base} {...props}>
-      <path d="m14.5 5.5-6.5 6.5 6.5 6.5" />
-    </svg>
-  );
-}
-
-export function IconoSiguiente(props: Props) {
-  return (
-    <svg {...base} {...props}>
-      <path d="m9.5 5.5 6.5 6.5-6.5 6.5" />
-    </svg>
-  );
-}
-
-export function IconoReproducir(props: Props) {
-  return (
-    <svg {...base} {...props}>
-      <path d="M8 5.5 18 12 8 18.5V5.5Z" />
-    </svg>
-  );
-}
-
-export function IconoPausa(props: Props) {
-  return (
-    <svg {...base} {...props}>
-      <path d="M9.5 5v14M14.5 5v14" />
-    </svg>
-  );
-}
-
 export function IconoTabla(props: Props) {
   return (
     <svg {...base} {...props}>

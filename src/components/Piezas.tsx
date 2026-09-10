@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { IconoBuscar } from "@/components/Icons";
 import { numero } from "@/lib/format";
 
 export function TarjetaMetrica({
@@ -178,5 +179,63 @@ export function AvisoOrigen({ origen }: { origen: "supabase" | "local" }) {
       Supabase, define <code className="font-mono">NEXT_PUBLIC_SUPABASE_URL</code> y{" "}
       <code className="font-mono">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.
     </p>
+  );
+}
+
+/**
+ * Fila de una lista de datos (`<dl>`): etiqueta a la izquierda, valor a la
+ * derecha. La usan el destacado, el detalle del historial y el comparador del
+ * ranking, así que las tres pantallas se ven igual sin repetir el markup.
+ */
+export function Renglon({
+  etiqueta,
+  valor,
+  fuerte,
+}: {
+  etiqueta: string;
+  valor: ReactNode;
+  fuerte?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4 px-4 py-2.5">
+      <dt className="text-gris-texto">{etiqueta}</dt>
+      <dd className={`cifras text-right ${fuerte ? "font-semibold" : "font-medium"}`}>
+        {valor}
+      </dd>
+    </div>
+  );
+}
+
+/** Campo de búsqueda con la lupa dentro. Se repite en las tres pantallas. */
+export function CampoBusqueda({
+  id,
+  etiqueta,
+  placeholder,
+  valor,
+  onCambio,
+}: {
+  id: string;
+  etiqueta: string;
+  placeholder: string;
+  valor: string;
+  onCambio: (valor: string) => void;
+}) {
+  return (
+    <div>
+      <label className="etiqueta-campo" htmlFor={id}>
+        {etiqueta}
+      </label>
+      <div className="relative">
+        <input
+          id={id}
+          className="campo pr-10"
+          type="search"
+          placeholder={placeholder}
+          value={valor}
+          onChange={(e) => onCambio(e.target.value)}
+        />
+        <IconoBuscar className="pointer-events-none absolute right-3 top-2.5 h-4 w-4 text-gris-texto" />
+      </div>
+    </div>
   );
 }

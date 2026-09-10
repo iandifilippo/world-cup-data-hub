@@ -63,9 +63,10 @@ src/
     globals.css           Paletas, tokens de diseño y clases compartidas
   components/
     Navegacion.tsx        Sidebar oscuro + tabs superiores + pie de proyecto
-    Piezas.tsx            Tarjetas de métrica, paneles, banderas, insignias
+    Piezas.tsx            Piezas compartidas: tarjetas de métrica, paneles,
+                          banderas, insignias, filas de datos y buscador
     Icons.tsx             Iconografía SVG propia
-    Destacado.tsx         Destacado histórico (columna izquierda de Inicio)
+    Destacado.tsx         Destacado histórico (panel inferior de Inicio)
     Paleta.tsx            Selector de paleta de colores
     ConsolaDatos.tsx      Consola de inserción al estilo de Supabase
     HistorialClient.tsx   Filtros, orden, paginación y detalle de edición
@@ -256,7 +257,7 @@ Si agregas las variables después del primer deploy, hay que redesplegar
 | RF08 | Alternancia tarjetas/calendario sin perder filtros |
 | RF09 | Filtros combinables por fecha, equipo y fase |
 | RF10 | Panel de detalle con banderas, estadio y comparación de ranking |
-| RF11 | `Destacado.tsx`, navegación manual y rotación opcional cada 12 s |
+| RF11 | `Destacado.tsx`, con desplegable para saltar a cualquier edición |
 | RF12 | `Navegacion.tsx`, presente en todas las pantallas |
 | RN01 | `CHECK rn01_campeon_subcampeon` en `ediciones` |
 | RN02, RN05, RN08 | Trigger `fn_validar_partido()` |

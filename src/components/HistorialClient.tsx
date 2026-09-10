@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 
-import { IconoBuscar, IconoCerrar, IconoTrofeo } from "@/components/Icons";
-import { Panel, Vacio } from "@/components/Piezas";
+import { IconoCerrar, IconoTrofeo } from "@/components/Icons";
+import { CampoBusqueda, Panel, Renglon, Vacio } from "@/components/Piezas";
 import { fechaCorta, normalizar, numero } from "@/lib/format";
 import type { Edicion, PartidoHistoricoDetallado } from "@/lib/types";
 
@@ -88,13 +88,6 @@ export function HistorialClient({
     paginaActual * POR_PAGINA,
   );
 
-  function reiniciar<T>(setter: (v: T) => void) {
-    return (v: T) => {
-      setter(v);
-      setPagina(1);
-    };
-  }
-
   const partidosDetalle = detalle
     ? partidos.filter((p) => p.anio === detalle.anio)
     : [];
@@ -106,14 +99,17 @@ export function HistorialClient({
         <div className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[1.9fr_1.2fr_1fr]">
           <div>
             <span className="etiqueta-campo">Filtrar por década / años</span>
-            {/* Tres controles en una sola celda: sin anchos mínimos los
-                marcadores "Desde 1930" y "Hasta 2022" salían cortados. */}
+            {/* Tres controles en una celda; el ancho mínimo evita que se
+                corten los marcadores "Desde 1930" / "Hasta 2022". */}
             <div className="flex flex-wrap gap-2">
               <select
                 aria-label="Década"
                 className="campo min-w-[7rem] flex-1"
                 value={decada}
-                onChange={(e) => reiniciar(setDecada)(e.target.value)}
+                onChange={(e) => {
+                  setDecada(e.target.value);
+                  setPagina(1);
+                }}
               >
                 <option value="">Década</option>
                 {decadas.map((d) => (
@@ -129,7 +125,10 @@ export function HistorialClient({
                 inputMode="numeric"
                 placeholder={`Desde ${rangoAnios.min}`}
                 value={desde}
-                onChange={(e) => reiniciar(setDesde)(e.target.value)}
+                onChange={(e) => {
+                  setDesde(e.target.value);
+                  setPagina(1);
+                }}
               />
               <input
                 aria-label="Hasta el año"
@@ -138,27 +137,24 @@ export function HistorialClient({
                 inputMode="numeric"
                 placeholder={`Hasta ${rangoAnios.max}`}
                 value={hasta}
-                onChange={(e) => reiniciar(setHasta)(e.target.value)}
+                onChange={(e) => {
+                  setHasta(e.target.value);
+                  setPagina(1);
+                }}
               />
             </div>
           </div>
 
-          <div>
-            <label className="etiqueta-campo" htmlFor="buscar-edicion">
-              Buscar
-            </label>
-            <div className="relative">
-              <input
-                id="buscar-edicion"
-                className="campo pr-10"
-                type="search"
-                placeholder="País, campeón o subcampeón…"
-                value={busqueda}
-                onChange={(e) => reiniciar(setBusqueda)(e.target.value)}
-              />
-              <IconoBuscar className="pointer-events-none absolute right-3 top-2.5 h-4 w-4 text-gris-texto" />
-            </div>
-          </div>
+          <CampoBusqueda
+            id="buscar-edicion"
+            etiqueta="Buscar"
+            placeholder="País, campeón o subcampeón…"
+            valor={busqueda}
+            onCambio={(v) => {
+              setBusqueda(v);
+              setPagina(1);
+            }}
+          />
 
           <div>
             <label className="etiqueta-campo" htmlFor="ordenar-edicion">
@@ -282,21 +278,24 @@ export function HistorialClient({
           <div className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.7fr)]">
             <div className="flex gap-4">
               <IconoTrofeo className="h-14 w-14 shrink-0 text-acento" />
-              <dl className="space-y-1 text-sm">
-                <Fila k="Sede" v={detalle.sede} />
-                <Fila k="Campeón" v={detalle.campeon} fuerte />
-                <Fila k="Subcampeón" v={detalle.subcampeon} />
-                <Fila
-                  k="Goleador"
-                  v={`${detalle.goleador} (${detalle.goles_goleador} goles)`}
+              <dl className="min-w-0 flex-1 divide-y divide-gris-borde rounded-lg border border-gris-borde text-sm">
+                <Renglon etiqueta="Sede" valor={detalle.sede} />
+                <Renglon etiqueta="Campeón" valor={detalle.campeon} fuerte />
+                <Renglon etiqueta="Subcampeón" valor={detalle.subcampeon} />
+                <Renglon
+                  etiqueta="Goleador"
+                  valor={`${detalle.goleador} (${detalle.goles_goleador} goles)`}
                 />
-                <Fila k="Asistencia total" v={numero(detalle.asistencia_total)} />
-                <Fila
-                  k="Promedio asistencia"
-                  v={numero(detalle.promedio_asistencia)}
+                <Renglon
+                  etiqueta="Asistencia total"
+                  valor={numero(detalle.asistencia_total)}
                 />
-                <Fila k="Partidos" v={String(detalle.partidos)} />
-                <Fila k="Equipos" v={String(detalle.equipos)} />
+                <Renglon
+                  etiqueta="Promedio asistencia"
+                  valor={numero(detalle.promedio_asistencia)}
+                />
+                <Renglon etiqueta="Partidos" valor={detalle.partidos} />
+                <Renglon etiqueta="Equipos" valor={detalle.equipos} />
               </dl>
             </div>
 
@@ -355,15 +354,6 @@ export function HistorialClient({
         </Panel>
       ) : null}
     </>
-  );
-}
-
-function Fila({ k, v, fuerte }: { k: string; v: string; fuerte?: boolean }) {
-  return (
-    <div className="flex gap-2">
-      <dt className="text-gris-texto">{k}:</dt>
-      <dd className={fuerte ? "font-semibold" : undefined}>{v}</dd>
-    </div>
   );
 }
 
