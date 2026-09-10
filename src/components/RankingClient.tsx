@@ -131,16 +131,17 @@ export function RankingClient({
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
+              <caption className="sr-only">Ranking FIFA por selección</caption>
               <thead className="border-b border-gris-borde bg-gris-suave">
                 <tr>
-                  <th className="th">Pos</th>
-                  <th className="th">Selección</th>
-                  <th className="th">Código</th>
-                  <th className="th">Confederación</th>
-                  <th className="th">Puntos</th>
-                  <th className="th">Pos. anterior</th>
-                  <th className="th">Variación</th>
-                  <th className="th">Partidos eval.</th>
+                  <th scope="col" className="th">Pos</th>
+                  <th scope="col" className="th">Selección</th>
+                  <th scope="col" className="th">Código</th>
+                  <th scope="col" className="th">Confederación</th>
+                  <th scope="col" className="th">Puntos</th>
+                  <th scope="col" className="th">Pos. anterior</th>
+                  <th scope="col" className="th">Variación</th>
+                  <th scope="col" className="th">Partidos eval.</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gris-borde">
@@ -223,18 +224,21 @@ export function RankingClient({
             ) : (
               <div className="mt-5 overflow-x-auto">
                 <table className="w-full border-collapse text-sm">
+                  <caption className="sr-only">
+                    Comparación de la selección entre los ciclos 2022 y 2026
+                  </caption>
                   <thead className="border-b border-gris-borde bg-gris-suave">
                     <tr>
-                      <th className="th" />
-                      <th className="th">2022</th>
-                      <th className="th">2026</th>
-                      <th className="th">Diferencia</th>
-                      <th className="th">Bandera</th>
+                      <th scope="col" className="th" />
+                      <th scope="col" className="th">2022</th>
+                      <th scope="col" className="th">2026</th>
+                      <th scope="col" className="th">Diferencia</th>
+                      <th scope="col" className="th">Bandera</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gris-borde">
                     <tr>
-                      <th className="td text-left font-medium text-gris-texto">
+                      <th scope="row" className="td text-left font-medium text-gris-texto">
                         Ranking
                       </th>
                       <td className="td cifras">{comparacion.posicion_2022}</td>
@@ -251,7 +255,7 @@ export function RankingClient({
                       </td>
                     </tr>
                     <tr>
-                      <th className="td text-left font-medium text-gris-texto">
+                      <th scope="row" className="td text-left font-medium text-gris-texto">
                         Puntos
                       </th>
                       <td className="td cifras">{puntos(comparacion.puntos_2022)}</td>
@@ -261,7 +265,7 @@ export function RankingClient({
                       </td>
                     </tr>
                     <tr>
-                      <th className="td text-left font-medium text-gris-texto">
+                      <th scope="row" className="td text-left font-medium text-gris-texto">
                         Confederación
                       </th>
                       <td className="td">{comparacion.confederacion}</td>
@@ -269,7 +273,7 @@ export function RankingClient({
                       <td className="td text-gris-texto">—</td>
                     </tr>
                     <tr>
-                      <th className="td text-left font-medium text-gris-texto">
+                      <th scope="row" className="td text-left font-medium text-gris-texto">
                         Participación 2026
                       </th>
                       <td className="td text-gris-texto">—</td>

@@ -6,12 +6,13 @@ import { IconoCerrar, IconoEstadio } from "@/components/Icons";
 import {
   Bandera,
   CampoBusqueda,
+  Fecha,
   Insignia,
   Marcador,
   Panel,
   Vacio,
 } from "@/components/Piezas";
-import { claveMes, fechaCorta, mesLargo, normalizar, puntos } from "@/lib/format";
+import { claveMes, mesLargo, normalizar, puntos } from "@/lib/format";
 import type { Fase, PartidoCalendario } from "@/lib/types";
 
 const FASES: Fase[] = [
@@ -257,9 +258,10 @@ export function CalendarioClient({ partidos }: { partidos: PartidoCalendario[] }
                           onClick={() => setDetalle(p)}
                           className="grid w-full grid-cols-[92px_1fr_auto] items-center gap-3 px-5 py-3 text-left transition hover:bg-azul-suave/40"
                         >
-                          <span className="cifras text-xs font-medium text-gris-texto">
-                            {fechaCorta(p.fecha)}
-                          </span>
+                          <Fecha
+                            iso={p.fecha}
+                            className="cifras text-xs font-medium text-gris-texto"
+                          />
                           <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                             <Bandera emoji={p.bandera_local} nombre={p.equipo_local} />
                             <span className="font-medium">{p.equipo_local}</span>
@@ -348,7 +350,7 @@ function TarjetaPartido({
       ].join(" ")}
     >
       <p className="cifras text-xs font-medium text-gris-texto">
-        {fechaCorta(p.fecha)} · {p.hora}
+        <Fecha iso={p.fecha} /> · {p.hora}
       </p>
       <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-azul">
         {p.grupo ? `Grupo ${p.grupo}` : p.fase}
@@ -405,7 +407,7 @@ function DetallePartido({
     >
       <div className="p-5">
         <p className="cifras text-center text-xs font-medium text-gris-texto">
-          {fechaCorta(p.fecha)} · {p.hora}
+          <Fecha iso={p.fecha} /> · {p.hora}
         </p>
         <p className="mt-0.5 text-center text-[11px] font-semibold uppercase tracking-wide text-azul">
           {p.grupo ? `Grupo ${p.grupo}` : p.fase}

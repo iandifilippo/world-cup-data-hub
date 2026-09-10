@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 import { IconoBuscar } from "@/components/Icons";
-import { numero } from "@/lib/format";
+import { fechaCorta, numero } from "@/lib/format";
 
 export function TarjetaMetrica({
   icono,
@@ -203,6 +203,19 @@ export function Renglon({
         {valor}
       </dd>
     </div>
+  );
+}
+
+/**
+ * Fecha marcada con `<time>`. El texto visible es la versión corta en español
+ * ("11 JUN 2026"); el atributo `dateTime` lleva el ISO (2026-06-11), que es el
+ * formato que entienden el navegador y los lectores de pantalla.
+ */
+export function Fecha({ iso, className = "" }: { iso: string; className?: string }) {
+  return (
+    <time dateTime={iso} className={className}>
+      {fechaCorta(iso)}
+    </time>
   );
 }
 

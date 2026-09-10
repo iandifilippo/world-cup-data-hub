@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 
 import { IconoCerrar, IconoTrofeo } from "@/components/Icons";
-import { CampoBusqueda, Panel, Renglon, Vacio } from "@/components/Piezas";
-import { fechaCorta, normalizar, numero } from "@/lib/format";
+import { CampoBusqueda, Fecha, Panel, Renglon, Vacio } from "@/components/Piezas";
+import { normalizar, numero } from "@/lib/format";
 import type { Edicion, PartidoHistoricoDetallado } from "@/lib/types";
 
 const POR_PAGINA = 5;
@@ -186,18 +186,21 @@ export function HistorialClient({
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
+              <caption className="sr-only">
+                Ediciones de la Copa Mundial (año, sede, campeón y estadísticas)
+              </caption>
               <thead className="border-b border-gris-borde bg-gris-suave">
                 <tr>
-                  <th className="th">Año</th>
-                  <th className="th">Sede</th>
-                  <th className="th">Equipos</th>
-                  <th className="th">Campeón</th>
-                  <th className="th">Subcampeón</th>
-                  <th className="th">Goleador</th>
-                  <th className="th">Asistencia total</th>
-                  <th className="th">Prom. asist.</th>
-                  <th className="th">Partidos</th>
-                  <th className="th sr-only">Detalle</th>
+                  <th scope="col" className="th">Año</th>
+                  <th scope="col" className="th">Sede</th>
+                  <th scope="col" className="th">Equipos</th>
+                  <th scope="col" className="th">Campeón</th>
+                  <th scope="col" className="th">Subcampeón</th>
+                  <th scope="col" className="th">Goleador</th>
+                  <th scope="col" className="th">Asistencia total</th>
+                  <th scope="col" className="th">Prom. asist.</th>
+                  <th scope="col" className="th">Partidos</th>
+                  <th scope="col" className="th sr-only">Detalle</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gris-borde">
@@ -310,20 +313,25 @@ export function HistorialClient({
               ) : (
                 <div className="max-h-80 overflow-auto rounded-lg border border-gris-borde">
                   <table className="w-full border-collapse">
+                    <caption className="sr-only">
+                      Partidos del torneo cargados en la base
+                    </caption>
                     <thead className="sticky top-0 border-b border-gris-borde bg-gris-suave">
                       <tr>
-                        <th className="th">Fecha</th>
-                        <th className="th">Local</th>
-                        <th className="th">Resultado</th>
-                        <th className="th">Visitante</th>
-                        <th className="th">Fase</th>
-                        <th className="th">Sede</th>
+                        <th scope="col" className="th">Fecha</th>
+                        <th scope="col" className="th">Local</th>
+                        <th scope="col" className="th">Resultado</th>
+                        <th scope="col" className="th">Visitante</th>
+                        <th scope="col" className="th">Fase</th>
+                        <th scope="col" className="th">Sede</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gris-borde">
                       {partidosDetalle.map((p) => (
                         <tr key={p.id_partido}>
-                          <td className="td cifras text-xs">{fechaCorta(p.fecha)}</td>
+                          <td className="td cifras text-xs">
+                            <Fecha iso={p.fecha} />
+                          </td>
                           <td className="td">{p.equipo_local}</td>
                           <td className="td cifras font-semibold">
                             {p.goles_local} - {p.goles_visitante}

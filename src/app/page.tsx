@@ -10,12 +10,13 @@ import {
 import {
   AvisoOrigen,
   Bandera,
+  Fecha,
   Marcador,
   Panel,
   TarjetaMetrica,
 } from "@/components/Piezas";
 import { Destacado } from "@/components/Destacado";
-import { fechaCorta, puntos } from "@/lib/format";
+import { puntos } from "@/lib/format";
 import { getCalendario, getEdiciones, getMetricas, getRanking } from "@/lib/queries";
 
 /** Cuántas filas se muestran en los paneles de resumen. */
@@ -89,9 +90,10 @@ export default async function PaginaInicio() {
                 key={p.id_partido}
                 className="flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-3 text-sm"
               >
-                <span className="cifras text-xs font-medium text-gris-texto">
-                  {fechaCorta(p.fecha)}
-                </span>
+                <Fecha
+                  iso={p.fecha}
+                  className="cifras text-xs font-medium text-gris-texto"
+                />
                 <span className="ml-auto flex flex-wrap items-center justify-end gap-x-2 gap-y-1">
                   <Bandera emoji={p.bandera_local} nombre={p.equipo_local} />
                   <span className="font-medium">{p.equipo_local}</span>

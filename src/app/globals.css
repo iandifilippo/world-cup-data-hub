@@ -307,6 +307,31 @@ body {
   }
 }
 
+/* --------------------------------------------------------------- DIÁLOGO
+   La consola de datos usa el <dialog> nativo: el navegador ya se encarga de
+   abrirlo por encima de todo, atrapar el foco dentro y cerrarlo con Escape.
+   Aquí sólo se le quitan los estilos por defecto y se pinta el fondo. */
+dialog.consola {
+  margin: auto;
+  max-width: min(56rem, 100vw);
+  max-height: 100dvh;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+dialog.consola::backdrop {
+  background: rgb(8 21 39 / 0.6);
+  backdrop-filter: blur(2px);
+}
+
+/* Bloquea el scroll del fondo mientras el diálogo está abierto, sólo con CSS:
+   `:has()` permite mirar "hacia dentro" y ver si hay un <dialog open>. */
+html:has(dialog.consola[open]) {
+  overflow: hidden;
+}
+
 /* Foco visible y consistente para quien navega con el teclado. */
 :where(a, button, select, input, textarea, [tabindex]):focus-visible {
   outline: 2px solid rgb(var(--c-azul));

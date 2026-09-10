@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 
 import {
   IconoAdvertencia,
@@ -38,20 +37,24 @@ function valoresIniciales(tabla: Tabla): Valores {
  */
 export function ConsolaDatos({ variante }: { variante: "lateral" | "compacto" }) {
   const [abierta, setAbierta] = useState(false);
-  const [montado, setMontado] = useState(false);
+  const dialogo = useRef<HTMLDialogElement>(null);
   const lateral = variante === "lateral";
 
-  // El diálogo se saca a <body> con un portal: tanto la barra lateral como la
-  // superior son `sticky`, y una caja `sticky` crea un contexto de apilamiento
-  // propio, así que un modal declarado dentro de ellas queda por debajo del
-  // contenido de la página por mucho z-index que se le ponga.
-  useEffect(() => setMontado(true), []);
+  // `showModal()` / `close()` son la API del <dialog> nativo. El navegador se
+  // encarga de abrirlo en su "capa superior" (por encima de todo, sin pelear
+  // con z-index), atrapar el foco dentro mientras esté abierto y cerrarlo con
+  // la tecla Escape. El contenido sólo se monta cuando está abierto, así el
+  // formulario empieza limpio cada vez.
+  function abrir() {
+    dialogo.current?.showModal();
+    setAbierta(true);
+  }
 
   return (
     <>
       <button
         type="button"
-        onClick={() => setAbierta(true)}
+        onClick={abrir}
         title="Abrir la consola de datos"
         className={
           lateral
@@ -73,9 +76,19 @@ export function ConsolaDatos({ variante }: { variante: "lateral" | "compacto" })
         )}
       </button>
 
-      {abierta && montado
-        ? createPortal(<Modal onCerrar={() => setAbierta(false)} />, document.body)
-        : null}
+      <dialog
+        ref={dialogo}
+        className="consola"
+        aria-labelledby="titulo-consola"
+        onClose={() => setAbierta(false)}
+        onClick={(e) => {
+          // Un clic sobre el propio <dialog> (y no sobre su contenido) es un
+          // clic en el fondo oscuro: se cierra.
+          if (e.target === dialogo.current) dialogo.current.close();
+        }}
+      >
+        {abierta ? <Modal onCerrar={() => dialogo.current?.close()} /> : null}
+      </dialog>
     </>
   );
 }
@@ -93,21 +106,9 @@ function Modal({ onCerrar }: { onCerrar: () => void }) {
 
   const conectado = supabaseConfigurado();
 
-  // Cerrar con Escape y bloquear el desplazamiento del fondo mientras la
-  // consola esté abierta.
-  useEffect(() => {
-    function alTeclear(e: KeyboardEvent) {
-      if (e.key === "Escape") onCerrar();
-    }
-    document.addEventListener("keydown", alTeclear);
-    const anterior = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", alTeclear);
-      document.body.style.overflow = anterior;
-    };
-  }, [onCerrar]);
-
+  // Al abrir y al cambiar de tabla, el foco va al primer campo del formulario.
+  // El resto (cerrar con Escape, atrapar el foco, bloquear el scroll del fondo)
+  // lo hace el <dialog> nativo y una regla `:has()` en globals.css.
   useEffect(() => {
     primerCampo.current?.focus();
   }, [tabla]);
@@ -207,226 +208,214 @@ function Modal({ onCerrar }: { onCerrar: () => void }) {
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-navy-900/60 p-0 backdrop-blur-sm sm:items-center sm:p-6"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onCerrar();
-      }}
-    >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="titulo-consola"
-        className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl border border-gris-borde bg-superficie shadow-modal sm:max-h-[86vh] sm:rounded-2xl"
-      >
-        {/* Cabecera */}
-        <div className="flex items-center gap-3 border-b border-gris-borde px-5 py-3.5">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-azul-suave text-azul">
-            <IconoBaseDatos className="h-5 w-5" />
-          </span>
-          <div className="min-w-0">
-            <h2 id="titulo-consola" className="text-sm font-semibold leading-tight">
-              Consola de datos
-            </h2>
-            <p className="truncate text-xs text-gris-texto">
-              Inserta registros en el esquema de Supabase del proyecto.
-            </p>
+    <div className="flex max-h-[90dvh] w-full flex-col overflow-hidden rounded-2xl border border-gris-borde bg-superficie shadow-modal">
+      {/* Cabecera */}
+      <div className="flex items-center gap-3 border-b border-gris-borde px-5 py-3.5">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-azul-suave text-azul">
+          <IconoBaseDatos className="h-5 w-5" />
+        </span>
+        <div className="min-w-0">
+          <h2 id="titulo-consola" className="text-sm font-semibold leading-tight">
+            Consola de datos
+          </h2>
+          <p className="truncate text-xs text-gris-texto">
+            Inserta registros en el esquema de Supabase del proyecto.
+          </p>
+        </div>
+        <EstadoConexion conectado={conectado} />
+        <button
+          type="button"
+          onClick={onCerrar}
+          aria-label="Cerrar la consola de datos"
+          className="btn-icono ml-1 shrink-0"
+        >
+          <IconoCerrar className="h-4 w-4" />
+        </button>
+      </div>
+
+      <div className="grid min-h-0 flex-1 lg:grid-cols-[210px_minmax(0,1fr)]">
+        {/* Lista de tablas */}
+        <div className="barra-fina border-b border-gris-borde bg-gris-suave p-2 lg:max-h-none lg:overflow-y-auto lg:border-b-0 lg:border-r">
+          <p className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gris-texto">
+            Tablas
+          </p>
+          <div className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
+            {TABLAS.map((t) => {
+              const activa = t.nombre === tabla.nombre;
+              return (
+                <button
+                  key={t.nombre}
+                  type="button"
+                  onClick={() => cambiarTabla(t.nombre)}
+                  aria-current={activa ? "true" : undefined}
+                  className={[
+                    "flex shrink-0 items-center gap-2 rounded-lg px-2.5 py-1.5 text-left font-mono text-xs transition lg:w-full lg:shrink",
+                    activa
+                      ? "bg-azul text-azul-contraste"
+                      : "text-gris-texto hover:bg-superficie hover:text-tinta",
+                  ].join(" ")}
+                >
+                  <IconoTabla className="h-3.5 w-3.5 shrink-0" />
+                  <span className="truncate">{t.nombre}</span>
+                </button>
+              );
+            })}
           </div>
-          <EstadoConexion conectado={conectado} />
-          <button
-            type="button"
-            onClick={onCerrar}
-            aria-label="Cerrar la consola de datos"
-            className="btn-icono ml-1 shrink-0"
-          >
-            <IconoCerrar className="h-4 w-4" />
-          </button>
         </div>
 
-        <div className="grid min-h-0 flex-1 lg:grid-cols-[210px_minmax(0,1fr)]">
-          {/* Lista de tablas */}
-          <div className="barra-fina border-b border-gris-borde bg-gris-suave p-2 lg:max-h-none lg:overflow-y-auto lg:border-b-0 lg:border-r">
-            <p className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gris-texto">
-              Tablas
-            </p>
-            <div className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
-              {TABLAS.map((t) => {
-                const activa = t.nombre === tabla.nombre;
-                return (
-                  <button
-                    key={t.nombre}
-                    type="button"
-                    onClick={() => cambiarTabla(t.nombre)}
-                    aria-current={activa ? "true" : undefined}
-                    className={[
-                      "flex shrink-0 items-center gap-2 rounded-lg px-2.5 py-1.5 text-left font-mono text-xs transition lg:w-full lg:shrink",
-                      activa
-                        ? "bg-azul text-azul-contraste"
-                        : "text-gris-texto hover:bg-superficie hover:text-tinta",
-                    ].join(" ")}
-                  >
-                    <IconoTabla className="h-3.5 w-3.5 shrink-0" />
-                    <span className="truncate">{t.nombre}</span>
-                  </button>
-                );
-              })}
-            </div>
+        {/* Formulario */}
+        <div className="barra-fina min-h-0 overflow-y-auto p-5">
+          <p className="text-sm text-gris-texto">{tabla.descripcion}</p>
+          {tabla.reglas?.length ? (
+            <ul className="mt-2 space-y-1">
+              {tabla.reglas.map((r) => (
+                <li
+                  key={r}
+                  className="flex gap-1.5 text-xs font-medium text-gris-texto"
+                >
+                  <IconoAdvertencia
+                    className="mt-px h-3.5 w-3.5 shrink-0 text-acento"
+                    aria-hidden="true"
+                  />
+                  {r}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            {tabla.columnas.map((c, i) => (
+              <Campo
+                key={`${tabla.nombre}-${c.nombre}`}
+                columna={c}
+                valor={valores[c.nombre] ?? ""}
+                error={errores[c.nombre]}
+                onCambio={(v) => escribir(c.nombre, v)}
+                refPrimero={
+                  i === 0
+                    ? (el) => {
+                        primerCampo.current = el;
+                      }
+                    : undefined
+                }
+              />
+            ))}
           </div>
 
-          {/* Formulario */}
-          <div className="barra-fina min-h-0 overflow-y-auto p-5">
-            <p className="text-sm text-gris-texto">{tabla.descripcion}</p>
-            {tabla.reglas?.length ? (
-              <ul className="mt-2 space-y-1">
-                {tabla.reglas.map((r) => (
-                  <li
-                    key={r}
-                    className="flex gap-1.5 text-xs font-medium text-gris-texto"
-                  >
-                    <IconoAdvertencia
-                      className="mt-px h-3.5 w-3.5 shrink-0 text-acento"
-                      aria-hidden="true"
-                    />
-                    {r}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              {tabla.columnas.map((c, i) => (
-                <Campo
-                  key={`${tabla.nombre}-${c.nombre}`}
-                  columna={c}
-                  valor={valores[c.nombre] ?? ""}
-                  error={errores[c.nombre]}
-                  onCambio={(v) => escribir(c.nombre, v)}
-                  refPrimero={
-                    i === 0
-                      ? (el) => {
-                          primerCampo.current = el;
-                        }
-                      : undefined
-                  }
-                />
-              ))}
+          {/* SQL generado */}
+          <div className="mt-6">
+            <div className="mb-1.5 flex items-center justify-between gap-3">
+              <span className="text-[11px] font-semibold uppercase tracking-wide text-gris-texto">
+                SQL generado
+              </span>
+              <button
+                type="button"
+                onClick={() => copiar(sql, "INSERT copiado al portapapeles.")}
+                className="btn btn-fantasma btn-sm"
+              >
+                <IconoCopiar className="h-3.5 w-3.5" />
+                Copiar
+              </button>
             </div>
+            <pre className="barra-fina overflow-x-auto rounded-lg border border-gris-borde bg-gris-suave p-3 font-mono text-xs leading-relaxed text-tinta">
+              {sql}
+            </pre>
+          </div>
 
-            {/* SQL generado */}
-            <div className="mt-6">
+          {script.length > 0 ? (
+            <div className="mt-5">
               <div className="mb-1.5 flex items-center justify-between gap-3">
                 <span className="text-[11px] font-semibold uppercase tracking-wide text-gris-texto">
-                  SQL generado
+                  Script acumulado · {script.length} registro(s)
                 </span>
-                <button
-                  type="button"
-                  onClick={() => copiar(sql, "INSERT copiado al portapapeles.")}
-                  className="btn btn-fantasma btn-sm"
-                >
-                  <IconoCopiar className="h-3.5 w-3.5" />
-                  Copiar
-                </button>
+                <div className="flex gap-1">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      copiar(script.join("\n\n"), "Script completo copiado.")
+                    }
+                    className="btn btn-fantasma btn-sm"
+                  >
+                    <IconoCopiar className="h-3.5 w-3.5" />
+                    Copiar script
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setScript([])}
+                    className="btn btn-fantasma btn-sm"
+                  >
+                    Vaciar
+                  </button>
+                </div>
               </div>
-              <pre className="barra-fina overflow-x-auto rounded-lg border border-gris-borde bg-gris-suave p-3 font-mono text-xs leading-relaxed text-tinta">
-                {sql}
+              <pre className="barra-fina max-h-40 overflow-auto rounded-lg border border-gris-borde bg-gris-suave p-3 font-mono text-xs leading-relaxed text-gris-texto">
+                {script.join("\n\n")}
               </pre>
             </div>
+          ) : null}
 
-            {script.length > 0 ? (
-              <div className="mt-5">
-                <div className="mb-1.5 flex items-center justify-between gap-3">
-                  <span className="text-[11px] font-semibold uppercase tracking-wide text-gris-texto">
-                    Script acumulado · {script.length} registro(s)
-                  </span>
-                  <div className="flex gap-1">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        copiar(script.join("\n\n"), "Script completo copiado.")
-                      }
-                      className="btn btn-fantasma btn-sm"
-                    >
-                      <IconoCopiar className="h-3.5 w-3.5" />
-                      Copiar script
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setScript([])}
-                      className="btn btn-fantasma btn-sm"
-                    >
-                      Vaciar
-                    </button>
-                  </div>
-                </div>
-                <pre className="barra-fina max-h-40 overflow-auto rounded-lg border border-gris-borde bg-gris-suave p-3 font-mono text-xs leading-relaxed text-gris-texto">
-                  {script.join("\n\n")}
-                </pre>
-              </div>
-            ) : null}
+          {aviso ? (
+            <p
+              role="status"
+              className={[
+                "mt-4 flex items-start gap-2 rounded-lg border px-3.5 py-2.5 text-xs",
+                aviso.tono === "ok"
+                  ? "border-exito-texto/30 bg-exito-fondo text-exito-texto"
+                  : "border-aviso-borde bg-aviso-fondo text-aviso-texto",
+              ].join(" ")}
+            >
+              {aviso.tono === "ok" ? (
+                <IconoPaloma className="mt-px h-3.5 w-3.5 shrink-0" />
+              ) : (
+                <IconoAdvertencia className="mt-px h-3.5 w-3.5 shrink-0" />
+              )}
+              {aviso.texto}
+            </p>
+          ) : null}
 
-            {aviso ? (
-              <p
-                role="status"
-                className={[
-                  "mt-4 flex items-start gap-2 rounded-lg border px-3.5 py-2.5 text-xs",
-                  aviso.tono === "ok"
-                    ? "border-exito-texto/30 bg-exito-fondo text-exito-texto"
-                    : "border-aviso-borde bg-aviso-fondo text-aviso-texto",
-                ].join(" ")}
-              >
-                {aviso.tono === "ok" ? (
-                  <IconoPaloma className="mt-px h-3.5 w-3.5 shrink-0" />
-                ) : (
-                  <IconoAdvertencia className="mt-px h-3.5 w-3.5 shrink-0" />
-                )}
-                {aviso.texto}
-              </p>
-            ) : null}
-
-            {!conectado ? (
-              <p className="mt-4 rounded-lg border border-aviso-borde bg-aviso-fondo px-3.5 py-2.5 text-xs text-aviso-texto">
-                Sin conexión a Supabase, la consola no escribe en ninguna base: arma
-                el SQL para que lo ejecutes en el editor de Supabase. Define{" "}
-                <code className="font-mono">NEXT_PUBLIC_SUPABASE_URL</code> y{" "}
-                <code className="font-mono">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> para
-                habilitar la inserción directa.
-              </p>
-            ) : (
-              <p className="mt-4 rounded-lg border border-gris-borde bg-gris-suave px-3.5 py-2.5 text-xs text-gris-texto">
-                Las políticas RLS del proyecto solo conceden lectura a la clave
-                pública: si el INSERT se rechaza, ejecuta el SQL desde el editor de
-                Supabase con una clave con permisos de escritura.
-              </p>
-            )}
-          </div>
+          {!conectado ? (
+            <p className="mt-4 rounded-lg border border-aviso-borde bg-aviso-fondo px-3.5 py-2.5 text-xs text-aviso-texto">
+              Sin conexión a Supabase, la consola no escribe en ninguna base: arma
+              el SQL para que lo ejecutes en el editor de Supabase. Define{" "}
+              <code className="font-mono">NEXT_PUBLIC_SUPABASE_URL</code> y{" "}
+              <code className="font-mono">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> para
+              habilitar la inserción directa.
+            </p>
+          ) : (
+            <p className="mt-4 rounded-lg border border-gris-borde bg-gris-suave px-3.5 py-2.5 text-xs text-gris-texto">
+              Las políticas RLS del proyecto solo conceden lectura a la clave
+              pública: si el INSERT se rechaza, ejecuta el SQL desde el editor de
+              Supabase con una clave con permisos de escritura.
+            </p>
+          )}
         </div>
+      </div>
 
-        {/* Pie con las acciones */}
-        <div className="flex flex-wrap items-center gap-2 border-t border-gris-borde bg-gris-suave px-5 py-3">
-          <span className="mr-auto font-mono text-xs text-gris-texto">
-            public.{tabla.nombre}
-          </span>
-          <button type="button" onClick={limpiar} className="btn btn-fantasma">
-            Limpiar
-          </button>
-          <button type="button" onClick={agregarAlScript} className="btn btn-secundario">
-            <IconoMas className="h-4 w-4" />
-            Añadir al script
-          </button>
-          <button
-            type="button"
-            onClick={insertarEnSupabase}
-            disabled={!conectado || enviando}
-            title={
-              conectado
-                ? "Insertar el registro en Supabase"
-                : "Requiere las variables de entorno de Supabase"
-            }
-            className="btn btn-primario"
-          >
-            {enviando ? "Insertando…" : "Insertar registro"}
-          </button>
-        </div>
+      {/* Pie con las acciones */}
+      <div className="flex flex-wrap items-center gap-2 border-t border-gris-borde bg-gris-suave px-5 py-3">
+        <span className="mr-auto font-mono text-xs text-gris-texto">
+          public.{tabla.nombre}
+        </span>
+        <button type="button" onClick={limpiar} className="btn btn-fantasma">
+          Limpiar
+        </button>
+        <button type="button" onClick={agregarAlScript} className="btn btn-secundario">
+          <IconoMas className="h-4 w-4" />
+          Añadir al script
+        </button>
+        <button
+          type="button"
+          onClick={insertarEnSupabase}
+          disabled={!conectado || enviando}
+          title={
+            conectado
+              ? "Insertar el registro en Supabase"
+              : "Requiere las variables de entorno de Supabase"
+          }
+          className="btn btn-primario"
+        >
+          {enviando ? "Insertando…" : "Insertar registro"}
+        </button>
       </div>
     </div>
   );

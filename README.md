@@ -88,6 +88,10 @@ supabase/
 scripts/                  Generadores Python del dataset y del SQL
 ```
 
+Las tablas de datos llevan `<caption>` y `scope` en cada `<th>`; las fechas
+se marcan con `<time datetime>`; las fichas de datos son listas `<dl>`. Es un
+frontend académico y el HTML está pensado para leerse y explicarse.
+
 Los archivos de `src/lib/data/` y las migraciones son **autogenerados**. Si
 necesitas cambiar los datos, edita los scripts de `scripts/` y vuelve a
 ejecutarlos:
@@ -162,6 +166,10 @@ columna— y abajo se arma el `INSERT` correspondiente en vivo.
 
 Sin Supabase configurado la consola no escribe en ninguna base; sirve como
 generador de SQL.
+
+Se abre en un `<dialog>` nativo: el navegador ya se encarga de ponerlo por
+encima de todo, atrapar el foco dentro y cerrarlo con Escape. El scroll del
+fondo se bloquea con una sola regla CSS (`html:has(dialog[open])`).
 
 ### Paletas de color
 
