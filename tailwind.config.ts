@@ -1,12 +1,18 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Colores de la aplicación. Están escritos aquí una sola vez y con su hex, así
- * que para cambiar el aspecto de toda la página basta con tocar este archivo:
- * `azul` es el color principal, `navy` la barra lateral oscura y `lienzo` el
- * fondo. Los nombres son los que se usan en las clases (`bg-azul`,
- * `text-gris-texto`, `border-gris-borde`, …).
+ * Cada color de la aplicación es una variable CSS (`--c-azul`, `--c-lienzo`, …)
+ * definida en `src/app/globals.css`. Ahí viven las cinco paletas: cada una da
+ * un valor distinto a las mismas variables, y el selector de paleta cambia un
+ * atributo en <html> para repintar toda la página sin recargar.
+ *
+ * El valor se guarda como los tres canales RGB sueltos ("37 99 235", sin
+ * comas) en lugar de un hex. Así Tailwind puede añadir la opacidad él mismo
+ * cuando se escribe `bg-azul/40` o `ring-azul/20`: sustituye `<alpha-value>`
+ * por la fracción y arma el `rgb(37 99 235 / 0.4)` final.
  */
+const color = (nombre: string) => `rgb(var(--c-${nombre}) / <alpha-value>)`;
+
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
@@ -14,39 +20,38 @@ const config: Config = {
       colors: {
         // Barra lateral y superficies oscuras.
         navy: {
-          900: "#081527",
-          800: "#0B1D36",
-          700: "#12294A",
-          600: "#1B3A63",
-          texto: "#CBD5E1",
+          900: color("navy-900"),
+          800: color("navy-800"),
+          700: color("navy-700"),
+          600: color("navy-600"),
+          texto: color("navy-texto"),
         },
-        // Color principal: el azul de la FIFA.
+        // Color principal de la paleta activa.
         azul: {
-          DEFAULT: "#2563EB",
-          claro: "#3B82F6",
-          suave: "#DBEAFE",
-          contraste: "#FFFFFF",
+          DEFAULT: color("azul"),
+          claro: color("azul-claro"),
+          suave: color("azul-suave"),
+          contraste: color("azul-contraste"),
         },
-        lienzo: "#F1F5F9", // fondo de la página
-        superficie: "#FFFFFF", // fondo de tarjetas y paneles
-        tinta: "#0F172A", // color del texto
+        lienzo: color("lienzo"), // fondo de la página
+        superficie: color("superficie"), // fondo de tarjetas y paneles
+        tinta: color("tinta"), // color del texto
         gris: {
-          borde: "#E2E8F0",
-          texto: "#64748B",
-          suave: "#F8FAFC",
+          borde: color("gris-borde"),
+          texto: color("gris-texto"),
+          suave: color("gris-suave"),
         },
-        acento: "#FBBF24", // dorado del trofeo
-        sube: "#16A34A", // el equipo subió en el ranking
-        baja: "#DC2626", // el equipo bajó en el ranking
-        // Aviso amarillo (dataset local) y confirmación verde (participa 2026).
+        acento: color("acento"), // dorado del trofeo
+        sube: color("sube"), // el equipo subió en el ranking
+        baja: color("baja"), // el equipo bajó en el ranking
         aviso: {
-          borde: "#FDE68A",
-          fondo: "#FFFBEB",
-          texto: "#92400E",
+          borde: color("aviso-borde"),
+          fondo: color("aviso-fondo"),
+          texto: color("aviso-texto"),
         },
         exito: {
-          fondo: "#ECFDF5",
-          texto: "#047857",
+          fondo: color("exito-fondo"),
+          texto: color("exito-texto"),
         },
       },
       fontFamily: {
@@ -55,9 +60,10 @@ const config: Config = {
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       boxShadow: {
-        tarjeta: "0 1px 2px rgb(15 23 42 / 0.04), 0 1px 3px rgb(15 23 42 / 0.06)",
-        panel: "0 4px 20px rgb(15 23 42 / 0.10)",
-        modal: "0 24px 60px rgb(15 23 42 / 0.28)",
+        tarjeta:
+          "0 1px 2px rgb(var(--c-sombra) / 0.04), 0 1px 3px rgb(var(--c-sombra) / 0.06)",
+        panel: "0 4px 20px rgb(var(--c-sombra) / 0.10)",
+        modal: "0 24px 60px rgb(var(--c-sombra) / 0.28)",
       },
     },
   },

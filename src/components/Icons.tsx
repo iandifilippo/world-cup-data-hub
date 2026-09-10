@@ -124,6 +124,18 @@ export function IconoFlecha(props: Props) {
   );
 }
 
+export function IconoPaleta(props: Props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 3a9 9 0 0 0 0 18c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4.1-4-7.6-9-7.6Z" />
+      <circle cx="7.7" cy="11.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="10.4" cy="7.7" r="1" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="8.2" r="1" fill="currentColor" stroke="none" />
+      <circle cx="17.4" cy="12" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export function IconoBaseDatos(props: Props) {
   return (
     <svg {...base} {...props}>

@@ -60,12 +60,13 @@ src/
     ranking/page.tsx      Ranking FIFA comparativo (RF06, RF07)
     calendario/page.tsx   Calendario 2026 (RF08–RF10)
     not-found.tsx         404
-    globals.css           Estilos base y clases compartidas (.tarjeta, .btn, .td…)
+    globals.css           Paletas de color, estilos base y clases compartidas
   components/
     Navegacion.tsx        Sidebar oscuro + tabs superiores + pie de proyecto
     Piezas.tsx            Piezas compartidas: tarjetas de métrica, paneles,
                           banderas, insignias, filas de datos y buscador
     Icons.tsx             Iconografía SVG propia
+    Paleta.tsx            Selector de paleta (grupo de radios nativo)
     Destacado.tsx         Destacado histórico (panel inferior de Inicio)
     ConsolaDatos.tsx      Consola de inserción al estilo de Supabase
     HistorialClient.tsx   Filtros, orden, paginación y detalle de edición
@@ -77,6 +78,7 @@ src/
     supabase.ts           Cliente Supabase opcional
     queries.ts            Acceso a datos con respaldo local
     comparar.ts           Comparación entre ciclos (regla RN10)
+    paletas.ts            Lista de paletas de color
     esquema.ts            Metadata del esquema para la consola de datos
     data/                 Dataset local autogenerado
 supabase/
@@ -161,13 +163,29 @@ columna— y abajo se arma el `INSERT` correspondiente en vivo.
 Sin Supabase configurado la consola no escribe en ninguna base; sirve como
 generador de SQL.
 
-### Colores
+### Paletas de color
 
-Todos los colores están en `tailwind.config.ts`, escritos con su hex y con
-nombres en español: `azul` es el principal, `navy` la barra lateral, `lienzo`
-el fondo y `tinta` el texto. Se usan como cualquier clase de Tailwind
-(`bg-azul`, `text-gris-texto`, `border-gris-borde`). Para cambiar el aspecto de
-toda la aplicación se toca ese archivo y nada más.
+Cinco paletas: **Clásico**, **Alto contraste**, **Esmeralda**, **Atardecer** y
+**Noche** (modo oscuro). La de *Alto contraste* está pensada para daltonismo:
+el «sube / baja» del ranking deja de ser verde/rojo y pasa a azul/naranja, el
+texto tiene más contraste y los bordes son más marcados.
+
+Cómo funciona, de fuera hacia dentro:
+
+- Cada color es una variable CSS (`--c-azul`, `--c-lienzo`, …). En
+  `src/app/globals.css` hay un bloque por paleta que le da a esas mismas
+  variables un valor distinto (`[data-paleta="noche"] { --c-azul: … }`).
+- El selector (`src/components/Paleta.tsx`) es un grupo de radios nativo
+  (`<fieldset>` + `<legend>`); al elegir uno escribe `data-paleta` en `<html>`
+  y toda la página se repinta sin recargar. La elección se guarda en
+  `localStorage`.
+- `tailwind.config.ts` referencia esas variables como
+  `rgb(var(--c-azul) / <alpha-value>)`. El valor se guarda como los tres
+  canales RGB sueltos (`37 99 235`, sin comas) para que Tailwind pueda añadir
+  la opacidad al vuelo cuando se escribe `bg-azul/40`.
+
+Para agregar una paleta: un bloque de variables en `globals.css` y una entrada
+en `src/lib/paletas.ts`.
 
 ---
 
