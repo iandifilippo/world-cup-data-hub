@@ -82,7 +82,7 @@ src/
 supabase/
   migrations/             Las 9 migraciones SQL, en orden
   world-cup-data-hub-completo.sql
-                          Las 9 migraciones unidas en un solo script
+                          Las 9 migraciones unidas (autogenerado)
 scripts/                  Generadores Python del dataset y del SQL
 ```
 
@@ -96,6 +96,7 @@ python3 scripts/gen_ts.py          # regenera src/lib/data/*.ts
 python3 scripts/gen_sql.py         # regenera las migraciones 001–007
 python3 scripts/gen_historico.py   # regenera la migración 008 y el histórico
 python3 scripts/gen_2026.py        # regenera la migración 009 y el Mundial 2026
+python3 scripts/gen_completo.py    # une las 9 migraciones en un solo script
 ```
 
 ### Qué hay en la base
@@ -104,18 +105,28 @@ python3 scripts/gen_2026.py        # regenera la migración 009 y el Mundial 202
 |---|---|---|
 | `ediciones` | 23 | Las 23 ediciones de 1930 a 2026, todas finalizadas |
 | `equipos` | 214 | 211 miembros FIFA + Checoslovaquia, URSS y Yugoslavia |
-| `sedes` | 79 | 16 estadios de 2026 + 63 sedes históricas |
+| `sedes` | 138 | 16 estadios de 2026 + 122 sedes históricas |
 | `ranking_fifa` | 422 | 211 selecciones × ciclos 2022 y 2026 |
-| `partidos` | 215 | 111 históricos (1930–2022) + los 104 del Mundial 2026 |
+| `partidos` | 339 | 235 históricos (1930–2022) + los 104 del Mundial 2026 |
 | `jugadores` | 22 | goleador de cada edición |
 | `fases`, `partido_equipo`, `edicion_sede`, `edicion_equipo`, `edicion_jugador` | — | relaciones del modelo E-R |
 
-El histórico cubre la fase final completa de las 23 ediciones (semifinales
-donde existieron, tercer lugar y final), la ronda final de Brasil 1950, el
-torneo ampliado de México 1970, todas las eliminatorias de Qatar 2022 y la
-fase de eliminación de Norteamérica 2026. El total oficial de partidos de cada
-torneo sigue estando en la columna `ediciones.partidos`, y la interfaz aclara
-cuántos de esos partidos están cargados en detalle.
+El histórico cubre:
+
+- La fase final completa de las 23 ediciones (semifinales donde existieron,
+  tercer lugar y final).
+- La ronda final de Brasil 1950, que no tuvo eliminatorias.
+- Los cuartos de final de 1954, 1958, 1962 y 1966.
+- El torneo ampliado de México 1970 (fase de grupos y cuartos).
+- Los octavos y cuartos de final completos de 1986 a 2022.
+- El Mundial 2026 entero, sus 104 partidos.
+
+1974, 1978 y 1982 no aparecen con octavos ni cuartos porque no los tuvieron:
+entre la fase de grupos y la final se jugaba una segunda fase de grupos.
+
+El total oficial de partidos de cada torneo sigue estando en la columna
+`ediciones.partidos`, y la interfaz aclara cuántos de esos partidos están
+cargados en detalle.
 
 El Mundial 2026 se jugó del 11 de junio al 19 de julio de 2026 y lo ganó
 España, que venció 1-0 a Argentina en la prórroga de la final disputada en el
